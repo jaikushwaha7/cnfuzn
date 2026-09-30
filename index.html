@@ -118,7 +118,11 @@
   .row{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
   .row>input[type=text]{flex:1 1 180px}
   .row>select{width:auto;flex:0 0 auto}
-  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+  .nav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:16px}
+  .nav .pill{white-space:normal;text-align:center;justify-content:center;max-width:100%}
+  @media(max-width:480px){.nav .pill{flex:1 1 140px}}
+  @media(max-width:400px){#engine{padding:10px}.panel{padding:14px}.mm{padding:8px}}
+  @media(min-width:1400px){.wrap{max-width:1160px}.hero{max-width:1200px}}
   .q{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-top:12px}
   .val{font-weight:700;color:var(--violet);min-width:2.5em;text-align:right}
   .ends{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted)}
@@ -157,6 +161,7 @@
   /* mermaid */
   .mm{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;overflow-x:auto;text-align:center;min-height:120px}
   .mm svg{max-width:100%;height:auto}
+  #mmview svg{min-width:480px}
   .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
   .overflow{overflow-x:auto}
   table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px;background:#fff;border-radius:16px}
@@ -510,7 +515,7 @@ function stepWork(){$("app").innerHTML=`${crisisBanner()}<p class="muted" style=
   if(S.root==="truth")liveTruth()}
 
 function journeyCode(r){const m=treeModel();const types=S.types.map(id=>TYPES.find(t=>t.id===id).n).join(" + ")||"Unsorted";
-  const lines=[`flowchart LR`,`  A["${mm(S.story)||"My confusion"}"] --> B["${mm(types)}"]`,`  B --> C{"${mm(ROOTS[S.root].q)}"}`,`  C --> D["${mm(ROOTS[S.root].m)}"]`];
+  const lines=[`flowchart ${innerWidth<640?"TD":"LR"}`,`  A["${mm(S.story)||"My confusion"}"] --> B["${mm(types)}"]`,`  B --> C{"${mm(ROOTS[S.root].q)}"}`,`  C --> D["${mm(ROOTS[S.root].m)}"]`];
   let prev="D";if(m.total){lines.push(`  ${prev} --> E["${m.label} problem: ${m.total} across ${m.all.length} pieces"]`);prev="E";
     if(m.rockItem){lines.push(`  ${prev} --> F["Biggest rock: ${mm(m.rockItem.t)}"]`);prev="F"}}
   lines.push(`  ${prev} --> G(["Next: ${mm(S.next)||"one small step"}"])`,`  G --> H["Review in ${mm(S.review)}"]`,`  classDef hot fill:#efeafe,stroke:#774aff`,`  class C,G hot`);return lines.join("\n")}
