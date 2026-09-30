@@ -1,5 +1,5 @@
 # cnfuzn.ai
-
+link[site 'https://jaikushwaha7.github.io/cnfuzn/']
 Diagnose a confusion, size it as a disk tree, apply the matching method, finish with a next step.
 
 | Path | What it is |
