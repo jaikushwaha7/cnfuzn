@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cnfuzn.ai — from confusion to complexity</title>
+<style>
+  @font-face{font-family:"Segoe UI";src:local("Segoe UI")}
+  html,body{margin:0;background:#000}
+  #stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Segoe UI",Arial,sans-serif;color:#fff}
+  .scene,.sbg,.art{position:absolute;inset:0;width:100%;height:100%}
+  .ui{position:absolute;left:80px;bottom:104px;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+  .kick{font-size:24px;letter-spacing:.22em;text-transform:uppercase;color:#ffb0dd;margin-bottom:8px;font-weight:500}
+  .cap{position:relative;width:1700px;height:84px}
+  .cap span{position:absolute;left:0;bottom:0;white-space:nowrap;font-size:72px;line-height:1;letter-spacing:-.03em;font-weight:600;text-transform:uppercase}
+  .sub{font-size:28px;opacity:.88;margin-top:12px;max-width:1300px}
+  /* persistent HUD */
+  .ladder{position:absolute;right:56px;top:120px;display:flex;flex-direction:column;gap:14px;align-items:flex-end;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
+  .ladder div{display:flex;gap:14px;align-items:center;opacity:.35}
+  .ladder i{width:12px;height:12px;border-radius:50%;background:#fff;display:block}
+  .ticker{position:absolute;left:80px;bottom:46px;display:flex;gap:26px;font-size:28px;letter-spacing:.06em;text-transform:lowercase}
+  .ticker span{opacity:.3}
+  .ticker b{opacity:.3;font-weight:400}
+  .card{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:absolute;inset:0}
+  .card h1{font-size:132px;line-height:1.02;letter-spacing:-.04em;margin:0;font-weight:600;text-transform:uppercase}
+  .card h1 em{font-style:normal;color:#ffb0dd}
+  .card p{font-size:40px;margin:26px 0 0;opacity:.9}
+  .credit{position:absolute;left:0;right:0;bottom:70px;text-align:center;font-size:24px;letter-spacing:.06em;opacity:.7}
+</style>
+</head>
+<body>
+<div id="stage" data-composition-id="confusion-to-complexity" data-start="0" data-width="1920" data-height="1080">
+
+  <!-- ===== 9 scale scenes (overlap by 1s for the zoom transition; alternate tracks) ===== -->
+  <div id="sc1" class="scene clip" data-start="0" data-duration="6" data-track-index="1">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#0b5a55,#04201f 80%)"></div>
+    <svg class="art" id="svg1" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">01 · Microbe</div><div class="cap"><span class="c1">Signal</span><span class="c2">Uncertainty</span></div><div class="sub">chemical gradients → sensing → response</div></div>
+  </div>
+  <div id="sc2" class="scene clip" data-start="5" data-duration="6" data-track-index="2">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#4d5a1f,#1a2109 85%)"></div>
+    <svg class="art" id="svg2" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">02 · Insect</div><div class="cap"><span>Competing signals</span></div><div class="sub">food · predator · temperature → one turn</div></div>
+  </div>
+  <div id="sc3" class="scene clip" data-start="10" data-duration="6" data-track-index="1">
+    <div class="sbg" style="background:linear-gradient(#0d2b66,#3f7fd0 70%,#9cc4f0)"></div>
+    <svg class="art" id="svg3" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">03 · Bird</div><div class="cap"><span>Multiple information sources</span></div><div class="sub">magnetic field · landmarks · sun · wind</div></div>
+  </div>
+  <div id="sc4" class="scene clip" data-start="15" data-duration="8" data-track-index="2">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 35% 45%,#3b2190,#140a34 85%)"></div>
+    <svg class="art" id="svg4" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">04 · Human</div><div class="cap"><span>Confusion becomes conscious</span></div><div class="sub">information + memory + emotion + values → reasoning → decision</div></div>
+  </div>
+  <div id="sc5" class="scene clip" data-start="22" data-duration="9" data-track-index="1">
+    <div class="sbg" style="background:radial-gradient(75% 75% at 50% 45%,#182b66,#070d22 85%)"></div>
+    <svg class="art" id="svg5" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">05 · Society</div><div class="cap"><span class="c1">Collective uncertainty</span><span class="c2">Civilization</span></div><div class="sub">information + competing interests + institutions → collective decisions</div></div>
+  </div>
+  <div id="sc6" class="scene clip" data-start="30" data-duration="6" data-track-index="2">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#0a2a5e,#01030c 85%)"></div>
+    <svg class="art" id="svg6" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">06 · Earth</div><div class="cap"><span>Earth</span></div><div class="sub">atmosphere, oceans and geology interact in feedback loops</div></div>
+  </div>
+  <div id="sc7" class="scene clip" data-start="35" data-duration="6" data-track-index="1">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#0b1138,#01020a 85%)"></div>
+    <svg class="art" id="svg7" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">07 · Solar system</div><div class="cap"><span>Solar system</span></div><div class="sub">small changes can shift long-term trajectories</div></div>
+  </div>
+  <div id="sc8" class="scene clip" data-start="40" data-duration="6" data-track-index="2">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#2a1260,#05020f 85%)"></div>
+    <svg class="art" id="svg8" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">08 · Galaxy</div><div class="cap"><span>Galaxy</span></div><div class="sub">stars, gas and dark matter interact</div></div>
+  </div>
+  <div id="sc9" class="scene clip" data-start="45" data-duration="7" data-track-index="1">
+    <div class="sbg" style="background:radial-gradient(70% 70% at 50% 50%,#10102a,#000 85%)"></div>
+    <svg class="art" id="svg9" viewBox="0 0 1920 1080"></svg>
+    <div class="ui"><div class="kick">09 · Universe</div><div class="cap"><span>Cosmic web</span></div><div class="sub">incomplete knowledge: dark matter, dark energy</div></div>
+  </div>
+
+  <!-- ===== closing card ===== -->
+  <div id="end" class="scene clip" data-start="51" data-duration="6" data-track-index="2">
+    <div class="sbg" style="background:radial-gradient(60% 60% at 30% 25%,#774aff,transparent 70%),radial-gradient(50% 50% at 85% 40%,#ff784b,transparent 70%),#10143a"></div>
+    <div class="card"><h1 id="endh">From confusion<br>to <em>complexity</em></h1><p id="endp">Information, uncertainty and emergence across scales</p></div>
+    <div class="credit" id="endc">cnfuzn.ai · imagery sources: NCBI Bookshelf · Smithsonian National Zoo · MIT CCI · NASA Earth Observatory · NASA SVS · Wikimedia Commons</div>
+  </div>
+
+  <!-- ===== persistent HUD ===== -->
+  <div class="clip" data-start="0" data-duration="57" data-track-index="5" id="hudwrap" style="position:absolute;inset:0;pointer-events:none">
+    <div class="ladder" id="ladder"></div>
+    <div class="ticker" id="ticker"><span>confusion</span><b>→</b><span>uncertainty</span><b>→</b><span>complexity</span><b>→</b><span>emergence</span></div>
+  </div>
+
+  <!-- ===== opening title ===== -->
+  <div id="title" class="card clip" data-start="0" data-duration="4" data-track-index="6">
+    <div class="kick" style="font-size:30px">cnfuzn.ai</div>
+    <h1>From confusion<br>to <em>complexity</em></h1>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script>
+  (function(){
+    const NS = "http://www.w3.org/2000/svg", TAU = Math.PI * 2;
+    const B = [0, 5, 10, 15, 22, 30, 35, 40, 45], END = 51;
+    const NAMES = ["Microbe", "Insect", "Bird", "Human", "Society", "Earth", "Solar system", "Galaxy", "Universe"];
+    const tl = gsap.timeline({ paused: true });
+
+    // seeded, deterministic randomness so every render is identical
+    const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const R = rng(11);
+
+    const E = (p, tag, a, txt) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (txt !== undefined) e.textContent = txt; p.appendChild(e); return e; };
+    const T = (p, x, y, txt, c = "#fff", sz = 34, anchor = "middle") => E(p, "text", { x, y, fill: c, "font-size": sz, "font-weight": 600, "text-anchor": anchor, "font-family": "Segoe UI,Arial,sans-serif", "letter-spacing": 2 }, txt);
+    const grad = (defs, id, stops, type = "radialGradient", extra = {}) => { const g = E(defs, type, Object.assign({ id }, extra)); stops.forEach(([o, c, op]) => E(g, "stop", { offset: o, "stop-color": c, "stop-opacity": op === undefined ? 1 : op })); return g; };
+    const arrow = (p, x1, y1, x2, y2, c, w = 6) => {
+      const L = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / L, uy = (y2 - y1) / L, hx = x2 - ux * 24, hy = y2 - uy * 24;
+      const line = E(p, "line", { x1, y1, x2: hx, y2: hy, stroke: c, "stroke-width": w, "stroke-linecap": "round", pathLength: 1, "stroke-dasharray": 1 });
+      const head = E(p, "polygon", { points: `${x2},${y2} ${hx - uy * 15},${hy + ux * 15} ${hx + uy * 15},${hy - ux * 15}`, fill: c });
+      return { line, head };
+    };
+    const draw = (a, t, d = 0.8) => { tl.from(a.line, { strokeDashoffset: 1, duration: d, ease: "power2.out" }, t).from(a.head, { opacity: 0, duration: 0.2 }, t + d - 0.1); };
+    const pop = (el, t, d = 0.5) => tl.from(el, { opacity: 0, scale: 0.6, transformOrigin: "50% 50%", duration: d, ease: "back.out(1.6)" }, t);
+    const swap = (sc, b, t) => { tl.to(`#${sc} .c1`, { opacity: 0, y: -24, duration: 0.5 }, b + t).from(`#${sc} .c2`, { opacity: 0, y: 24, duration: 0.6 }, b + t + 0.2); };
+
+    /* ---------- 01 MICROBE ---------- */
+    (() => {
+      const b = B[0], g = document.getElementById("svg1"), d = E(g, "defs");
+      grad(d, "cg", [[0, "#c9ffee"], [1, "#1fb58f"]]);
+      E(g, "circle", { cx: 960, cy: 540, r: 270, fill: "none", stroke: "#7ff0c8", "stroke-opacity": .25, "stroke-width": 3 });
+      for (let i = 0; i < 48; i++) {
+        const a = R() * TAU, r0 = 430 + R() * 420, att = i < 30, tr = att ? 190 + R() * 80 : r0 + 450;
+        const c = E(g, "circle", { cx: 960 + Math.cos(a) * r0, cy: 540 + Math.sin(a) * r0 * .75, r: att ? 8 : 6, fill: att ? "#ff9d6b" : "#ffb0dd", "fill-opacity": .92 });
+        tl.to(c, { attr: { cx: 960 + Math.cos(a) * tr, cy: 540 + Math.sin(a) * tr * (att ? .62 : .75) }, duration: 3.6, ease: "power1.inOut" }, b + .6 + R() * 1.2);
+      }
+      const cell = E(g, "g", { transform: "translate(960,540)" }), inner = E(cell, "g", {});
+      E(inner, "path", { d: "M-150,0 C-235,-70 -300,70 -390,0 S-530,-55 -580,8", stroke: "#b6ffe8", "stroke-width": 8, fill: "none", "stroke-linecap": "round" });
+      E(inner, "ellipse", { rx: 150, ry: 96, fill: "url(#cg)", stroke: "#e8fff7", "stroke-width": 4 });
+      E(inner, "ellipse", { rx: 66, ry: 32, fill: "#0e6b57", "fill-opacity": .65 });
+      tl.to(inner, { rotation: 9, svgOrigin: "0 0", duration: .9, yoyo: true, repeat: 5, ease: "sine.inOut" }, b + .2);
+      const ar = arrow(g, 1560, 820, 1210, 640, "#ff9d6b", 7); T(g, 1500, 880, "chemical gradient", "#ffd2b8", 30);
+      draw(ar, b + 1.2, 1);
+      swap("sc1", b, 2.8);
+    })();
+
+    /* ---------- 02 INSECT ---------- */
+    (() => {
+      const b = B[1], g = document.getElementById("svg2"), d = E(g, "defs");
+      grad(d, "tg", [[0, "#3c8dff"], [1, "#ff784b"]], "linearGradient", { x1: 0, y1: 0, x2: 1, y2: 0 });
+      const food = E(g, "g", {}); E(food, "circle", { cx: 360, cy: 470, r: 56, fill: "#ff9d3b" }); E(food, "circle", { cx: 344, cy: 452, r: 14, fill: "#ffd08a" }); T(food, 360, 580, "FOOD", "#ffe2b0", 32);
+      const pred = E(g, "g", {}); const pts = []; for (let i = 0; i < 12; i++) { const r = i % 2 ? 40 : 78, a = i * Math.PI / 6; pts.push(`${1560 + Math.cos(a) * r},${420 + Math.sin(a) * r}`); }
+      E(pred, "polygon", { points: pts.join(" "), fill: "#ff5c9a" }); T(pred, 1560, 560, "PREDATOR", "#ffc2dc", 32);
+      const temp = E(g, "g", {}); E(temp, "rect", { x: 780, y: 800, width: 360, height: 34, rx: 17, fill: "url(#tg)" }); T(temp, 960, 786, "TEMPERATURE", "#ffe1c9", 30);
+      const at = E(g, "g", { transform: "translate(960,540) scale(1.5)" }), ant = E(at, "g", {});
+      [[-110, 0, 70, 46], [-18, 0, 42, 30]].forEach(([x, y, rx, ry]) => E(ant, "ellipse", { cx: x, cy: y, rx, ry, fill: "#241708" }));
+      E(ant, "circle", { cx: 52, cy: 0, r: 32, fill: "#241708" });
+      [[-40, -26, -30, -80], [-18, -28, 6, -84], [4, -24, 40, -74], [-40, 26, -30, 80], [-18, 28, 6, 84], [4, 24, 40, 74], [72, -14, 122, -50], [72, 14, 122, 50]].forEach(([x1, y1, x2, y2]) => E(ant, "line", { x1, y1, x2, y2, stroke: "#241708", "stroke-width": 5, "stroke-linecap": "round" }));
+      E(ant, "circle", { cx: 62, cy: -10, r: 6, fill: "#fff" });
+      pop(food, b + .5); pop(pred, b + .8); pop(temp, b + 1.1);
+      const a1 = arrow(g, 440, 480, 820, 520, "#ffb347", 8), a2 = arrow(g, 1470, 440, 1110, 500, "#ff5c9a", 8), a3 = arrow(g, 960, 792, 960, 690, "#ff8f4b", 8);
+      draw(a1, b + 1.8, 1); draw(a2, b + 2.1, 1); draw(a3, b + 2.4, 1);
+      tl.to(ant, { rotation: 180, svgOrigin: "0 0", duration: 1.1, ease: "power2.inOut" }, b + 3.6)
+        .to(a1.line, { attr: { "stroke-width": 16 }, duration: .6 }, b + 4.2)
+        .to([a2.line, a2.head, a3.line, a3.head], { opacity: .15, duration: .6 }, b + 4.2);
+    })();
+
+    /* ---------- 03 BIRD ---------- */
+    (() => {
+      const b = B[2], g = document.getElementById("svg3");
+      const bird = E(g, "g", { transform: "translate(960,540) scale(2.6)" }), bi = E(bird, "g", {});
+      E(bi, "path", { d: "M-90,10 C-55,-62 -12,-52 0,0 C12,-52 55,-62 90,10 C52,-8 22,10 0,34 C-22,10 -52,-8 -90,10Z", fill: "#fff", stroke: "#0d2b66", "stroke-width": 2 });
+      tl.to(bi, { y: -14, duration: 1.1, yoyo: true, repeat: 4, ease: "sine.inOut" }, b);
+      const mag = E(g, "g", { fill: "none", stroke: "#b9e0ff", "stroke-width": 5, opacity: .9 });
+      [120, 170, 220].forEach(ry => E(mag, "path", { d: `M620,300 C680,${300 - ry * 1.6} 1240,${300 - ry * 1.6} 1300,300`, pathLength: 1, "stroke-dasharray": 1 }));
+      T(g, 960, 120, "MAGNETIC FIELD", "#e3f2ff", 30);
+      const mt = E(g, "g", {}); E(mt, "polygon", { points: "200,690 320,490 420,630 480,550 600,690", fill: "#27405f" }); E(mt, "polygon", { points: "320,490 350,540 290,540", fill: "#fff" }); T(g, 400, 740, "LANDMARK", "#e3f2ff", 30);
+      const sun = E(g, "g", {}); E(sun, "circle", { cx: 1610, cy: 290, r: 62, fill: "#ffd55a" }); for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; E(sun, "line", { x1: 1610 + Math.cos(a) * 82, y1: 290 + Math.sin(a) * 82, x2: 1610 + Math.cos(a) * 112, y2: 290 + Math.sin(a) * 112, stroke: "#ffd55a", "stroke-width": 7, "stroke-linecap": "round" }); } T(sun, 1610, 440, "SUN", "#fff6d2", 30);
+      const wind = E(g, "g", { fill: "none", stroke: "#eaf4ff", "stroke-width": 6, "stroke-linecap": "round" });
+      [700, 740, 780].forEach((y, i) => E(wind, "path", { d: `M1250,${y} C1340,${y - 40} 1420,${y + 40} 1510,${y} S1650,${y - 30} 1720,${y + 6}`, pathLength: 1, "stroke-dasharray": 1, opacity: .9 - i * .2 })); T(g, 1485, 840, "WIND", "#eaf4ff", 30);
+      tl.from(mag.children, { strokeDashoffset: 1, duration: 1, stagger: .2, ease: "power2.out" }, b + .6).from(wind.children, { strokeDashoffset: 1, duration: 1, stagger: .2, ease: "power2.out" }, b + 1.1);
+      pop(mt, b + .8); pop(sun, b + 1.0);
+      const col = "#ffffff";
+      draw(arrow(g, 960, 230, 960, 440, col, 7), b + 2.2, .9); draw(arrow(g, 520, 600, 780, 540, col, 7), b + 2.5, .9);
+      draw(arrow(g, 1500, 360, 1150, 470, col, 7), b + 2.8, .9); draw(arrow(g, 1400, 680, 1120, 610, col, 7), b + 3.1, .9);
+    })();
+
+    /* ---------- 04 HUMAN ---------- */
+    (() => {
+      const b = B[3], g0 = document.getElementById("svg4"), d = E(g0, "defs"), g = g0, L = E(g0, "g", { transform: "translate(0,-60)" });
+      grad(d, "hg", [[0, "#b9a2ff", .55], [1, "#774aff", .05]]);
+      E(L, "circle", { cx: 560, cy: 400, r: 230, fill: "url(#hg)" });
+      E(L, "path", { d: "M330,800 C340,650 460,610 560,610 C660,610 780,650 790,800 Z", fill: "#5b3cc4", "fill-opacity": .75 });
+      E(L, "circle", { cx: 560, cy: 400, r: 158, fill: "#8d72f0", "fill-opacity": .7, stroke: "#dcd0ff", "stroke-width": 5 });
+      const nodes = [[-70, -60], [0, -90], [70, -55], [-95, 10], [-20, -10], [60, 20], [100, -10], [-50, 70], [30, 80]].map(([x, y]) => [560 + x, 400 + y]);
+      const edges = [[0, 1], [1, 2], [0, 3], [0, 4], [1, 4], [2, 5], [2, 6], [3, 7], [4, 7], [4, 8], [5, 8], [5, 6], [3, 4], [4, 5]];
+      const eg = E(L, "g", { stroke: "#fff", "stroke-opacity": .55, "stroke-width": 3 });
+      edges.forEach(([i, j]) => E(eg, "line", { x1: nodes[i][0], y1: nodes[i][1], x2: nodes[j][0], y2: nodes[j][1] }));
+      const ng = E(L, "g", { fill: "#fff" }); nodes.forEach(([x, y]) => E(ng, "circle", { cx: x, cy: y, r: 10 }));
+      tl.from(eg.children, { opacity: 0, duration: .4, stagger: .07 }, b + .4).from(ng.children, { attr: { r: 0 }, duration: .4, stagger: .08 }, b + .3);
+      tl.to(ng.children, { attr: { r: 15 }, duration: .6, yoyo: true, repeat: 7, stagger: { each: .12, repeat: 0 }, ease: "sine.inOut" }, b + 2);
+      const labels = ["INFORMATION", "UNCERTAINTY", "EMOTION", "REASONING", "DECISION"], cols = ["#7fb2ff", "#ffb0dd", "#ff9d6b", "#9ef0c5", "#ffffff"];
+      const boxes = labels.map((t, i) => { const y = 110 + i * 130, gg = E(g, "g", {}); E(gg, "rect", { x: 1000, y, width: 540, height: 84, rx: 26, fill: "rgba(255,255,255,.1)", stroke: cols[i], "stroke-width": 4 }); T(gg, 1270, y + 56, t, "#fff", 38); return gg; });
+      draw(arrow(g, 800, 330, 985, 150, "#ffffff", 6), b + 1.2, .8);
+      boxes.forEach((bx, i) => {
+        tl.from(bx, { opacity: 0, x: 60, duration: .5, ease: "power2.out" }, b + 2 + i * .8);
+        if (i < 4) draw(arrow(g, 1270, 110 + i * 130 + 86, 1270, 110 + (i + 1) * 130 - 2, "#fff", 5), b + 2.4 + i * .8, .4);
+        tl.to(bx.firstChild, { attr: { fill: cols[i] }, duration: .3, yoyo: true, repeat: 1, ease: "sine.inOut" }, b + 2.4 + i * .8);
+      });
+      tl.to(boxes[4].firstChild, { attr: { "fill-opacity": 1, fill: "#774aff" }, duration: .6 }, b + 6);
+    })();
+
+    /* ---------- 05 SOCIETY ---------- */
+    (() => {
+      const b = B[4], g = document.getElementById("svg5"), d = E(g, "defs"), r5 = rng(5);
+      grad(d, "city", [[0, "#ffd08a", 1], [1, "#ff784b", 0]]);
+      const P = []; for (let i = 0; i < 58; i++) { const a = r5() * TAU, rad = Math.sqrt(r5()); P.push({ x: 960 + Math.cos(a) * rad * 730, y: 400 + Math.sin(a) * rad * 280 }); P[i].d = Math.hypot(P[i].x - 960, P[i].y - 400); }
+      const seen = new Set(), links = [];
+      P.forEach((p, i) => { P.map((q, j) => ({ j, dd: Math.hypot(p.x - q.x, p.y - q.y) })).filter(o => o.j !== i).sort((u, v) => u.dd - v.dd).slice(0, 2).forEach(o => { const k = i < o.j ? i + "-" + o.j : o.j + "-" + i; if (!seen.has(k)) { seen.add(k); links.push([i, o.j]); } }); });
+      const lg = E(g, "g", { stroke: "#9fb4ff", "stroke-opacity": .4, "stroke-width": 2.5 }), glow = E(g, "g", {}), ng = E(g, "g", {});
+      const order = P.map((p, i) => i).sort((u, v) => P[u].d - P[v].d), rank = {}; order.forEach((i, k) => rank[i] = k);
+      const lines = links.map(([i, j]) => { const l = E(lg, "line", { x1: P[i].x, y1: P[i].y, x2: P[j].x, y2: P[j].y }); tl.from(l, { opacity: 0, duration: .4 }, b + .4 + Math.max(rank[i], rank[j]) / P.length * 3.2); return l; });
+      const circ = P.map((p, i) => { const c = E(ng, "circle", { cx: p.x, cy: p.y, r: 10, fill: "#8fa0d0" }); E(glow, "circle", { cx: p.x, cy: p.y, r: 38, fill: "url(#city)", opacity: 0 }); tl.from(c, { attr: { r: 0 }, duration: .4, ease: "back.out(2)" }, b + .4 + rank[i] / P.length * 3.2); return c; });
+      const sA = P.reduce((m, p, i) => p.x < P[m].x ? i : m, 0), sB = P.reduce((m, p, i) => p.x > P[m].x ? i : m, 0);
+      P.forEach((p, i) => { const dA = Math.hypot(p.x - P[sA].x, p.y - P[sA].y), dB = Math.hypot(p.x - P[sB].x, p.y - P[sB].y), useA = dA < dB; tl.to(circ[i], { fill: useA ? "#ff9d6b" : "#8d72f0", duration: .35 }, b + 4 + Math.min(dA, dB) / 900 * 2.2); });
+      tl.to(glow.children, { opacity: .95, duration: 1.2, stagger: { each: .03, from: "random" } }, b + 6.4)
+        .to(circ, { attr: { r: 15 }, fill: "#ffe6b8", duration: 1, stagger: { each: .02, from: "random" } }, b + 6.4)
+        .to(lg, { attr: { "stroke-opacity": .15 }, duration: 1 }, b + 6.4);
+      swap("sc5", b, 6.2);
+    })();
+
+    /* ---------- 06 EARTH ---------- */
+    (() => {
+      const b = B[5], g = document.getElementById("svg6"), d = E(g, "defs"), r6 = rng(6);
+      grad(d, "ocean", [[0, "#3f93ff"], [1, "#0a2c70"]], "radialGradient", { cx: ".38", cy: ".35", r: ".75" });
+      grad(d, "shade", [[.45, "#000", 0], [1, "#000", .7]], "radialGradient", { cx: ".4", cy: ".4", r: ".8" });
+      const cp = E(d, "clipPath", { id: "globeClip" }); E(cp, "circle", { cx: 960, cy: 520, r: 330 });
+      const halo = E(g, "circle", { cx: 960, cy: 520, r: 350, fill: "none", stroke: "#8cc8ff", "stroke-opacity": .5, "stroke-width": 16 });
+      E(g, "circle", { cx: 960, cy: 520, r: 330, fill: "url(#ocean)" });
+      const clip = E(g, "g", { "clip-path": "url(#globeClip)" }), land = E(clip, "g", {});
+      for (let copy = 0; copy < 2; copy++) {
+        const r7 = rng(77); // same shapes in both copies so the loop is seamless
+        for (let i = 0; i < 7; i++) {
+          const cx = 560 + i * 130 + r7() * 60 + copy * 1000, cy = 330 + r7() * 380, rx = 70 + r7() * 70, ry = 40 + r7() * 70;
+          E(land, "ellipse", { cx, cy, rx, ry, fill: "#3fae6b", transform: `rotate(${r7() * 60 - 30} ${cx} ${cy})` });
+          for (let k = 0; k < 5; k++) E(land, "circle", { cx: cx + (r7() - .5) * rx * 1.3, cy: cy + (r7() - .5) * ry * 1.3, r: 3.5, fill: "#ffd08a" });
+        }
+      }
+      tl.fromTo(land, { x: 0 }, { x: -1000, duration: 6, ease: "none" }, b);
+      E(g, "circle", { cx: 960, cy: 520, r: 330, fill: "url(#shade)" });
+      [["CLIMATE", 560, 250], ["OCEANS", 1400, 330], ["BIOSPHERE", 1340, 780]].forEach(([t, x, y], i) => { const l = T(g, x, y, t, "#cfe8ff", 30); tl.from(l, { opacity: 0, duration: .6 }, b + 1.2 + i * .5); });
+      const ring = E(g, "circle", { cx: 960, cy: 520, r: 420, fill: "none", stroke: "#cfe8ff", "stroke-width": 4, "stroke-dasharray": "14 18", "stroke-opacity": .7 });
+      tl.from(ring, { opacity: 0, duration: .8 }, b + 1.6).to(ring, { rotation: 120, svgOrigin: "960 520", duration: 5, ease: "none" }, b);
+      tl.to(halo, { attr: { "stroke-opacity": .15 }, duration: 1.4, yoyo: true, repeat: 3, ease: "sine.inOut" }, b);
+    })();
+
+    /* ---------- 07 SOLAR SYSTEM ---------- */
+    (() => {
+      const b = B[6], g = document.getElementById("svg7"), d = E(g, "defs"), r8 = rng(8);
+      grad(d, "sun", [[0, "#fff3b0"], [.5, "#ffb13b"], [1, "#ff784b", 0]]);
+      E(g, "circle", { cx: 960, cy: 520, r: 120, fill: "url(#sun)" });
+      E(g, "circle", { cx: 960, cy: 520, r: 52, fill: "#ffd56a" });
+      const radii = [130, 205, 290, 390, 500], spin = [420, 300, 240, 150, 90], colr = ["#c9b79c", "#e8c27a", "#4da3ff", "#d9694a", "#d6b38a"], size = [9, 13, 15, 12, 26];
+      radii.forEach((r, i) => {
+        const o = E(g, "circle", { cx: 960, cy: 520, r, fill: "none", stroke: i === 2 ? "#8cc8ff" : "#fff", "stroke-opacity": i === 2 ? .7 : .22, "stroke-width": i === 2 ? 4 : 2 });
+        tl.from(o, { opacity: 0, duration: .5 }, b + .4 + i * .25);
+        const pg = E(g, "g", {}), a0 = r8() * TAU;
+        E(pg, "circle", { cx: 960 + Math.cos(a0) * r, cy: 520 + Math.sin(a0) * r, r: size[i], fill: colr[i] });
+        if (i === 2) E(pg, "circle", { cx: 960 + Math.cos(a0) * r, cy: 520 + Math.sin(a0) * r, r: 28, fill: "none", stroke: "#8cc8ff", "stroke-width": 3 });
+        tl.from(pg, { opacity: 0, duration: .5 }, b + .6 + i * .25).to(pg, { rotation: spin[i], svgOrigin: "960 520", duration: 5.6, ease: "none" }, b + .4);
+      });
+      T(g, 960 - 290, 520 - 18, "EARTH", "#8cc8ff", 26);
+      const alt = E(g, "ellipse", { cx: 972, cy: 520, rx: 300, ry: 282, fill: "none", stroke: "#ffb0dd", "stroke-width": 3, "stroke-dasharray": "10 12" });
+      tl.from(alt, { opacity: 0, duration: .8 }, b + 3); T(g, 1290, 980, "a small change → a different trajectory", "#ffc2dc", 28);
+    })();
+
+    /* ---------- 08 GALAXY ---------- */
+    (() => {
+      const b = B[7], g = document.getElementById("svg8"), d = E(g, "defs"), r9 = rng(9);
+      grad(d, "core", [[0, "#fff4d8"], [.4, "#ffb98a", .7], [1, "#7a3cff", 0]]);
+      const gal = E(g, "g", {}), cols = ["#ffffff", "#cfd8ff", "#ffc9e8", "#ffd9a8"];
+      for (let i = 0; i < 760; i++) {
+        const arm = i % 2, r = Math.pow(r9(), .65) * 470, th = r / 62 + arm * Math.PI + (r9() + r9() + r9() - 1.5) * .55;
+        E(gal, "circle", { cx: 960 + Math.cos(th) * r, cy: 520 + Math.sin(th) * r * .56, r: .9 + r9() * 2.1, fill: cols[Math.floor(r9() * 4)], "fill-opacity": .45 + r9() * .5 });
+      }
+      E(gal, "ellipse", { cx: 960, cy: 520, rx: 150, ry: 92, fill: "url(#core)" });
+      const mx = 960 + Math.cos(4.2) * 300, my = 520 + Math.sin(4.2) * 300 * .56;
+      const ring = E(gal, "circle", { cx: mx, cy: my, r: 16, fill: "none", stroke: "#ff784b", "stroke-width": 4 });
+      T(gal, mx, my + 54, "YOU ARE HERE", "#ffb08f", 26);
+      tl.from(gal.children, { opacity: 0, duration: .02, stagger: { each: .004, from: "start" } }, b + .3)
+        .to(gal, { rotation: 14, svgOrigin: "960 520", duration: 6, ease: "none" }, b)
+        .from(ring, { attr: { r: 60 }, opacity: 0, duration: 1 }, b + 3);
+      tl.to(ring, { attr: { r: 26 }, duration: .8, yoyo: true, repeat: 3, ease: "sine.inOut" }, b + 4);
+    })();
+
+    /* ---------- 09 UNIVERSE ---------- */
+    (() => {
+      const b = B[8], g = document.getElementById("svg9"), d = E(g, "defs"), r10 = rng(10);
+      grad(d, "cl", [[0, "#ffffff"], [1, "#8d72ff", 0]]);
+      const web = E(g, "g", {}), N = []; for (let i = 0; i < 150; i++) N.push({ x: 120 + r10() * 1680, y: 90 + r10() * 880 });
+      const lg = E(web, "g", { stroke: "#8d72ff", "stroke-opacity": .35, "stroke-width": 2 }), ng = E(web, "g", {});
+      let cnt = 0; N.forEach((p, i) => N.forEach((q, j) => { if (j > i && cnt < 240 && Math.hypot(p.x - q.x, p.y - q.y) < 190) { cnt++; E(lg, "line", { x1: p.x, y1: p.y, x2: q.x, y2: q.y }); } }));
+      N.forEach(p => { E(ng, "circle", { cx: p.x, cy: p.y, r: 16 + r10() * 14, fill: "url(#cl)", "fill-opacity": .9 }); });
+      tl.from(lg.children, { opacity: 0, duration: .6, stagger: { each: .012, from: "random" } }, b + .5)
+        .from(ng.children, { opacity: 0, duration: .5, stagger: { each: .02, from: "random" } }, b + .3)
+        .fromTo(web, { scale: 1 }, { scale: 1.18, transformOrigin: "960px 540px", duration: 6.5, ease: "none" }, b);
+      tl.to(ng.children, { "fill-opacity": .45, duration: 1.2, yoyo: true, repeat: 1, stagger: { each: .02, from: "random" }, ease: "sine.inOut" }, b + 1.5);
+    })();
+
+    /* ---------- zoom transitions between every pair of scales ---------- */
+    for (let i = 0; i < 9; i++) {
+      const s = "#sc" + (i + 1), out = i < 8 ? B[i + 1] : END;
+      if (i > 0) {
+        tl.from(s + " .art", { scale: 3.2, opacity: 0, transformOrigin: "50% 50%", duration: 1, ease: "power2.out" }, B[i])
+          .from(s + " .sbg", { opacity: 0, duration: 1 }, B[i])
+          .from(s + " .ui", { opacity: 0, y: 30, duration: .8 }, B[i] + .4);
+      }
+      tl.fromTo(s + " .art", { scale: 1, opacity: 1 }, { scale: .3, opacity: 0, transformOrigin: "50% 50%", duration: 1, ease: "power2.in", immediateRender: false }, out)
+        .fromTo(s + " .sbg", { opacity: 1 }, { opacity: 0, duration: 1, immediateRender: false }, out)
+        .fromTo(s + " .ui", { opacity: 1 }, { opacity: 0, duration: .5, immediateRender: false }, out);
+    }
+
+    /* ---------- HUD: scale ladder and word ticker ---------- */
+    const lad = document.getElementById("ladder");
+    NAMES.slice().reverse().forEach((n, k) => { const i = 8 - k, row = document.createElement("div"); row.id = "lad" + i; row.innerHTML = `<span>${n}</span><i></i>`; lad.appendChild(row); });
+    NAMES.forEach((n, i) => {
+      const row = "#lad" + i, out = i < 8 ? B[i + 1] : END;
+      tl.to(row, { opacity: 1, duration: .4 }, B[i]).to(row, { opacity: .35, duration: .4 }, out);
+    });
+    const words = document.querySelectorAll("#ticker span"), wT = [0, 22, 30, 45];
+    words.forEach((w, i) => {
+      tl.to(w, { opacity: 1, color: "#ffb0dd", duration: .5 }, wT[i]);
+      if (i < 3) tl.to(w, { opacity: .3, color: "#ffffff", duration: .5 }, wT[i + 1]);
+    });
+
+    /* ---------- opening title and closing card ---------- */
+    tl.from("#title .kick", { opacity: 0, y: 20, duration: .6 }, .2).from("#title h1", { opacity: 0, y: 50, duration: .9, ease: "power3.out" }, .4).to("#title", { opacity: 0, duration: .6 }, 3.4);
+    tl.from("#endh", { opacity: 0, y: 60, duration: .9, ease: "power3.out" }, END + .6).from("#endp", { opacity: 0, duration: .7 }, END + 1.6).from("#endc", { opacity: 0, duration: .7 }, END + 2.4)
+      .to("#hudwrap", { opacity: 0, duration: .6 }, END + .2);
+    tl.to({}, { duration: .01 }, 56.99);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["confusion-to-complexity"] = tl;
+  })();
+  </script>
+</div>
+</body>
+</html>

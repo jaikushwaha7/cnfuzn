@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cnfuzn.ai</title>
+<meta name="description" content="cnfuzn.ai sizes your confusion like a disk, finds the biggest rocks, and turns them into a next step.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f6f5fa;--line:#e3e1e8;--ink:#555559;--strong:#1c1c22;--muted:#8a8890;--card:#fff;
+    --violet:#774aff;--orange:#ff784b;--pink:#ffb0dd;--navy:#254571;--green:#33e37a;--radius:28px;
+    --soft:#efeafe;--warn:#fff1e8;--ok:#e7f8ee}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  /* hero video: soft, blended into the gradient header only */
+  .hero-card video.hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;mix-blend-mode:screen;filter:saturate(1.2) blur(4px);transform:scale(1.04);transition:opacity 2s ease;pointer-events:none}
+  .hero-card.vid video.hv{opacity:.42}
+  .hero-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,14,50,.25),rgba(16,14,50,0) 35%,rgba(16,14,50,.35));pointer-events:none}
+  @media(prefers-reduced-motion:reduce){.hero-card video.hv{display:none}}
+  .scrollcue{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin-top:22px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.85);text-decoration:none}
+  .scrollcue i{width:22px;height:34px;border:2px solid rgba(255,255,255,.7);border-radius:14px;position:relative}
+  .scrollcue i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:#fff;animation:cue 1.8s ease-in-out infinite}
+  @keyframes cue{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
+  @media(prefers-reduced-motion:reduce){.scrollcue i::after{animation:none;opacity:1}}
+  nav .links a{padding:7px 12px;border-radius:999px;transition:background .15s,color .15s}
+  nav .links a:hover{background:var(--soft)}
+  nav .links a.active{background:var(--strong);color:#fff}
+  .player{position:relative;border-radius:var(--radius);overflow:hidden;background:#05060f;box-shadow:0 24px 70px rgba(40,30,90,.22);border:1px solid rgba(255,255,255,.6)}
+  .player video{display:block;width:100%;height:auto;aspect-ratio:16/9}
+  .scales{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .scales span{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid var(--line);backdrop-filter:blur(6px);color:var(--strong)}
+  .glass{background:rgba(255,255,255,.72);backdrop-filter:blur(10px)}
+  body{margin:0;background:transparent;color:var(--ink);font:16px/1.6 Geist,"Helvetica Neue",system-ui,sans-serif}
+  a{color:var(--violet)}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+  .mono{font-family:"Geist Mono",ui-monospace,Consolas,monospace}
+  .eyebrow{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+
+  /* floating pill nav */
+  nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 18px;border-radius:999px;background:rgba(255,255,255,.78);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.7);box-shadow:0 6px 30px rgba(40,30,90,.14);max-width:calc(100vw - 24px)}
+  nav .logo{font-weight:700;color:var(--strong);text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+  nav .logo b{color:var(--violet)}
+  nav .links{display:flex;gap:14px;font-size:.85rem}
+  nav .links a{color:var(--ink);text-decoration:none}
+  nav .logo{margin-right:auto}
+  .burger{display:none;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer}
+  .burger span{display:block;height:2px;border-radius:2px;background:var(--strong);transition:transform .2s,opacity .2s}
+  nav.open .burger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  nav.open .burger span:nth-child(2){opacity:0}
+  nav.open .burger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  @media(max-width:820px){
+    nav{width:calc(100vw - 24px);padding:6px 6px 6px 16px;gap:8px}
+    .burger{display:flex}
+    nav .links{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;flex-direction:column;gap:0;padding:8px;border-radius:24px;background:rgba(255,255,255,.97);border:1px solid var(--line);box-shadow:0 12px 40px rgba(40,30,90,.18);font-size:1rem}
+    nav.open .links{display:flex}
+    nav .links a{padding:12px 16px;border-radius:14px}
+    nav .links a:active,nav .links a:hover{background:var(--soft)}
+  }
+  @media(max-width:360px){nav .logo{font-size:.95rem}.pill.sm{padding:7px 12px}}
+  .pill{white-space:nowrap;border:0;border-radius:999px;padding:11px 22px;font:inherit;font-weight:600;cursor:pointer;background:var(--strong);color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+  .pill.sm{padding:8px 16px;font-size:.88rem}
+  .pill.ghost{background:transparent;color:var(--strong);border:1px solid var(--line)}
+  .pill.white{background:#fff;color:var(--strong)}
+  .pill.glass{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4)}
+  .pill:disabled{opacity:.35;cursor:not-allowed}
+  button.link{background:none;border:0;color:var(--violet);cursor:pointer;font:inherit;padding:4px 0}
+  :focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+
+  /* hero */
+  .hero{margin:12px auto 0;max-width:1040px;padding:0 12px}
+  .hero-card{position:relative;overflow:hidden;border-radius:var(--radius);padding:110px 20px 36px;color:#fff;text-align:center;background:#2c3c8f}
+  .hero-card::before{content:"";position:absolute;inset:-25%;filter:blur(24px);
+    background:radial-gradient(40% 40% at 18% 18%,#774aff 0,transparent 70%),radial-gradient(38% 38% at 88% 38%,#ff784b 0,transparent 70%),radial-gradient(50% 45% at 50% 105%,#254571 0,transparent 70%),radial-gradient(28% 28% at 28% 82%,rgba(255,176,221,.7) 0,transparent 70%)}
+  .hero-card>*{position:relative}
+  .hero h1{font-size:clamp(2.4rem,7vw,4.4rem);line-height:1.02;letter-spacing:-.035em;margin:14px 0 16px;font-weight:600}
+  .hero h1 em{font-style:normal;color:var(--pink)}
+  .hero p.lede{max-width:40em;margin:0 auto 24px;color:rgba(255,255,255,.88);font-size:1.05rem}
+  .hero .cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+  .term{max-width:560px;margin:0 auto;text-align:left;border-radius:16px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);overflow:hidden}
+  .term .bar{display:flex;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.2);font-size:.78rem;color:rgba(255,255,255,.8)}
+  .term .bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.55)}
+  .term .bar span{margin-left:auto}
+  #tout{height:150px;overflow:auto;padding:12px 14px;font-size:.82rem;white-space:pre-wrap;color:#fff}
+  .tline{display:flex;gap:8px;padding:8px 14px 10px;border-top:1px solid rgba(255,255,255,.2);font-size:.82rem}
+  .tline b{color:var(--pink)}
+  .tline input{flex:1;background:none;border:0;color:#fff;font:inherit;outline:none}
+  .tline input::placeholder{color:rgba(255,255,255,.55)}
+  .ticker{display:flex;justify-content:space-between;margin-top:26px;font-size:.72rem;letter-spacing:.16em;color:rgba(255,255,255,.85)}
+
+  section{padding:64px 0 8px}
+  section h2{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.05;letter-spacing:-.03em;text-transform:uppercase;color:var(--strong);margin:6px 0 10px;font-weight:600}
+  .lead{max-width:42em;margin:0 0 26px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .card{background:rgba(255,255,255,.78);backdrop-filter:blur(10px);border:1px solid rgba(227,225,232,.9);border-radius:22px;padding:20px}
+  .card h3{margin:0 0 4px;font-size:1.05rem;color:var(--strong)}
+  .card p{margin:0;font-size:.92rem}
+  .num{font-size:.78rem;color:var(--violet);font-weight:600;letter-spacing:.1em}
+
+  /* engine */
+  #engine{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  @media(min-width:700px){#engine{padding:30px}}
+  .steps{display:flex;gap:6px;margin:0 0 16px}
+  .steps span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .steps span.on{background:linear-gradient(90deg,var(--violet),var(--orange))}
+  .panel{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:12px}
+  .panel h3{margin:0 0 4px;font-size:1.15rem;color:var(--strong);letter-spacing:-.01em}
+  .sub{margin:0 0 12px;font-size:.92rem;color:var(--muted)}
+  label{display:block;font-weight:600;margin:14px 0 6px;font-size:.9rem;color:var(--strong)}
+  textarea,input[type=text],select{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--strong);font:inherit}
+  textarea{min-height:90px;resize:vertical}
+  input[type=range]{width:100%;accent-color:var(--violet)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--strong);border-radius:999px;padding:6px 14px;font:inherit;font-size:.88rem;cursor:pointer}
+  .chip.on{background:var(--strong);color:#fff;border-color:var(--strong)}
+  .chip.sug{border-style:dashed;border-color:var(--violet)}
+  .row{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
+  .row>input[type=text]{flex:1 1 180px}
+  .row>select{width:auto;flex:0 0 auto}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+  .q{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-top:12px}
+  .val{font-weight:700;color:var(--violet);min-width:2.5em;text-align:right}
+  .ends{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted)}
+  .note{padding:12px 14px;border-radius:14px;background:var(--warn);margin:12px 0;font-size:.92rem}
+  .note.good{background:var(--ok)}
+  .note.crisis{border:1px solid var(--orange)}
+  .result{background:linear-gradient(135deg,var(--soft),#fff0e9);border-color:transparent}
+  .result .big{font-size:1.4rem;font-weight:600;color:var(--strong);margin:2px 0 8px;letter-spacing:-.02em}
+  .bar2{height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+  .bar2 i{display:block;height:100%;background:var(--violet);transition:width .25s}
+  ul.tight{margin:6px 0 0;padding-left:20px}
+  ul.tight li{margin:4px 0}
+  .muted{color:var(--muted);font-size:.9rem}
+  .commit{border:2px dashed var(--violet);border-radius:16px;padding:14px;margin-top:12px;background:#fff}
+  .branch{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px}
+  .branch .bname{font-weight:600}
+  .row.leaf{padding-left:14px}
+  .pill.sm.ghost{padding:6px 12px}
+
+  /* disk tree */
+  .dt{font-family:"Geist Mono",ui-monospace,Consolas,monospace;font-size:.78rem;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px;overflow-x:auto}
+  .dt-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(90px,180px) 38px 42px;gap:10px;align-items:center;padding:2px 0;min-width:420px}
+  .dt-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--strong)}
+  .dt-bar{height:10px;border-radius:3px;background:var(--line);overflow:hidden}
+  .dt-bar i{display:block;height:100%}
+  .dt-size,.dt-pct{text-align:right;color:var(--muted)}
+  .dt-row.b .dt-name{font-weight:600}
+  .dt-row.l .dt-name{padding-left:28px;color:var(--ink)}
+  .dt-row.l.rock .dt-name::after{content:" ★";color:var(--orange)}
+  .k-fact{background:var(--violet)} .k-choice{background:var(--orange)} .k-feel{background:var(--pink)} .k-time{background:var(--navy)}
+  .stack{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:10px 0 6px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+  .sizebadge{display:inline-block;padding:3px 12px;border-radius:999px;background:var(--strong);color:#fff;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+  /* mermaid */
+  .mm{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;overflow-x:auto;text-align:center;min-height:120px}
+  .mm svg{max-width:100%;height:auto}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .overflow{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px;background:#fff;border-radius:16px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.08em}
+  footer{padding:40px 0 60px;color:var(--muted);font-size:.88rem}
+</style>
+<script>window.__mm=new Promise(r=>{window.__mmResolve=r});</script>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({startOnLoad:false,theme:"base",securityLevel:"strict",
+    themeVariables:{fontFamily:"Geist, system-ui, sans-serif",primaryColor:"#efeafe",primaryBorderColor:"#774aff",primaryTextColor:"#1c1c22",lineColor:"#8a8890",secondaryColor:"#fff1e8",tertiaryColor:"#ffffff"}});
+  window.__mmResolve(mermaid);
+</script>
+</head>
+<body>
+<nav id="nav">
+  <a class="logo" href="#top">cnfuzn<b>.ai</b></a>
+  <div class="links" id="navlinks"><a href="#how">How</a><a href="#journey">Journey</a><a href="#flows">Flows</a><a href="#map">Map</a><a href="#methods">Methods</a><a href="#skill">Skill</a></div>
+  <a class="pill sm" href="#engine">Try it</a>
+  <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span></span><span></span><span></span></button>
+</nav>
+
+<header class="hero" id="top"><div class="hero-card" id="herocard">
+  <video class="hv" id="hv" muted loop playsinline preload="none" poster="assets/journey-poster.jpg" aria-hidden="true"></video>
+  <div class="eyebrow">Identity · Decisions · Feelings · Belief · Future</div>
+  <h1>Confusion, <em>sized</em> and solved.</h1>
+  <p class="lede">cnfuzn.ai diagnoses which kind of confusion you have, measures it like a disk so you can see the biggest rocks, then applies the method that fits and ends with a next step.</p>
+  <div class="cta"><a class="pill white" href="#engine">↓ Untangle something</a><a class="pill glass" href="#flows">See the flows</a></div>
+  <div class="term" role="group" aria-label="Demo terminal">
+    <div class="bar"><i></i><i></i><i></i><span class="mono">you@cnfuzn ~</span></div>
+    <div id="tout" class="mono">Welcome. Type <b>help</b> to begin.</div>
+    <div class="tline mono"><b>$</b><input id="tin" placeholder="type help" autocomplete="off" aria-label="Terminal input"></div>
+  </div>
+  <div class="ticker"><span>TRUE</span><span>WANT</span><span>DO</span><span>BE</span><span>GO</span></div>
+  <a class="scrollcue" href="#how" aria-label="Scroll to details"><i></i>Details below</a>
+</div></header>
+
+<section id="how"><div class="wrap">
+  <div class="eyebrow num">Five doors, one engine</div>
+  <h2>Pick the door that fits your problem.</h2>
+  <p class="lead">Every confusion reduces to a few questions. Each needs a different tool, and using the wrong tool is why people stay stuck.</p>
+  <div class="grid">
+    <div class="card"><span class="num">01 · WHAT IS TRUE?</span><h3>Knowledge</h3><p>Evidence ledger with a Bayesian update and bias check. The only place we use probability, because facts have odds.</p></div>
+    <div class="card"><span class="num">02 · WHAT DO I WANT?</span><h3>Preference</h3><p>Five Whys plus an emotion check: is this a want or a reaction?</p></div>
+    <div class="card"><span class="num">03 · WHAT SHOULD I DO?</span><h3>Decision &amp; morals</h3><p>Options weighed by ability to act, reversibility and values, not by guessing outcomes.</p></div>
+    <div class="card"><span class="num">04 · WHO AM I?</span><h3>Identity</h3><p>Values plus an inherited-versus-chosen audit across gender, race, caste, religion, culture and class.</p></div>
+    <div class="card"><span class="num">05 · WHERE AM I GOING?</span><h3>Direction</h3><p>A small Plan, Do, Check, Act experiment with a review date.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="eyebrow num">The engine · runs in your browser</div>
+  <h2>Size it. Then solve it.</h2>
+  <p class="lead">Nothing leaves this tab. You'll break the confusion into branches and pieces, weigh each, and see a disk-usage tree of the whole problem.</p>
+  <div id="engine"><div class="steps" id="steps"></div><div id="app"></div></div>
+</div></section>
+
+<section id="journey"><div class="wrap">
+  <div class="eyebrow num">Microbe → cosmos · 57 seconds</div>
+  <h2>From confusion to complexity.</h2>
+  <p class="lead">Every scale meets incomplete, conflicting information and must respond. More entities, more interactions, more possible states: uncertainty grows into complexity, and complexity into emergence. The same video drifts softly behind this page.</p>
+  <div class="player"><video controls playsinline preload="none" poster="assets/journey-poster.jpg" aria-label="Animated zoom from a microbe to the cosmic web"><source src="assets/journey.mp4" type="video/mp4"></video></div>
+  <div class="scales"><span>Microbe</span><span>Insect</span><span>Bird</span><span>Human</span><span>Society</span><span>Earth</span><span>Solar system</span><span>Galaxy</span><span>Universe</span></div>
+</div></section>
+
+<section id="flows"><div class="wrap">
+  <div class="eyebrow num">Flow diagrams · Mermaid</div>
+  <h2>How it flows.</h2>
+  <p class="lead">The same diagrams live as <span class="mono">.mmd</span> files and drive the HyperFrames explainer video.</p>
+  <div class="tabs" id="mtabs"></div>
+  <div class="mm" id="mmview">Loading diagram…</div>
+</div></section>
+
+<section id="map"><div class="wrap">
+  <div class="eyebrow num">Twelve families</div>
+  <h2>The map of confusion.</h2>
+  <p class="lead">Each family routes to a root question. You can always override the routing.</p>
+  <div class="grid" id="maprow"></div>
+  <p class="muted" style="margin-top:14px">Identity layers stack (gender + religion + caste + class + family). Stacked expectations are the hardest form of "what do <em>I</em> believe and want?", so each layer becomes its own branch in the disk tree.</p>
+</div></section>
+
+<section id="methods"><div class="wrap">
+  <div class="eyebrow num">Under the hood</div>
+  <h2>Methods.</h2>
+  <div class="overflow"><table>
+    <tr><th>Method</th><th>What it does</th><th>Used for</th></tr>
+    <tr><td>Disk-usage tree</td><td>Break a problem into weighted branches and pieces; roll sizes up; find the rocks that carry most of the weight.</td><td>Sizing any confusion</td></tr>
+    <tr><td>Scientific method · Bayesian analysis</td><td>State a claim, weigh evidence, update confidence.</td><td>What is true?</td></tr>
+    <tr><td>Five Whys · root cause</td><td>Move from symptom to underlying cause.</td><td>What do I want?</td></tr>
+    <tr><td>Multi-criteria decision analysis</td><td>Weigh options across several lenses.</td><td>What should I do?</td></tr>
+    <tr><td>Values clarification</td><td>Separate inherited from chosen.</td><td>Who am I?</td></tr>
+    <tr><td>PDCA / PDSA</td><td>Plan, do, check, act with small tests.</td><td>Where am I going?</td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:14px">Confusion isn't only human: a system meeting several possible states with incomplete information must respond, adapt or evolve. Microbe: signal → sensing → response. Animal: senses → nervous system → choice. Human: information + memory + emotion + values → decision. Society: information + interests + institutions → collective decision. People add values and meaning, so this engine never stops at facts.</p>
+</div></section>
+
+<section id="skill"><div class="wrap">
+  <div class="eyebrow num">For anyone</div>
+  <h2>Take it with you.</h2>
+  <p class="lead">cnfuzn.ai also ships as a Claude skill anyone can install. It runs the same method in conversation: diagnose, disk-tree, method, Mermaid map, next step.</p>
+  <div class="card"><p class="mono" style="font-size:.85rem">.claude/skills/confusion-ai/SKILL.md<br>copy the folder to <b>~/.claude/skills/</b> (all projects) or keep it in a project's <b>.claude/skills/</b>, then ask: “I'm confused about…”</p></div>
+  <p class="muted" style="margin-top:14px">A thinking tool, not therapy or professional advice. On identity, belief, caste, gender, race and politics it structures your thinking and never hands you a conclusion.</p>
+</div></section>
+
+<footer><div class="wrap">cnfuzn.ai · clarity is a next step, not a feeling you wait for.</div></footer>
+
+<script>
+/* ---------- data ---------- */
+const TYPES=[
+  {id:"identity",n:"Identity",q:"Who am I? What do I value?",root:"self"},
+  {id:"purpose",n:"Purpose",q:"What should I work toward?",root:"path"},
+  {id:"decision",n:"Decision",q:"Stay or leave? Which option?",root:"do"},
+  {id:"emotional",n:"Emotional",q:"Why do I feel this? Two feelings at once?",root:"want"},
+  {id:"relationship",n:"Relationship",q:"Can I trust them? Do they care?",root:"truth"},
+  {id:"moral",n:"Moral",q:"What's right when values collide?",root:"do"},
+  {id:"career",n:"Career & money",q:"What fits me: pay, stability, freedom, interest?",root:"do"},
+  {id:"information",n:"Information",q:"What's true? Which source?",root:"truth"},
+  {id:"social",n:"Social & cultural",q:"Which expectations do I follow?",root:"self"},
+  {id:"future",n:"Future",q:"Plan or adapt? Right long-term call?",root:"path"},
+  {id:"existential",n:"Existential",q:"How do I live knowing life is finite?",root:"self"},
+  {id:"politics",n:"Politics & policy",q:"Which claim or policy? My interest vs my values",root:"truth"}];
+const OVERLAYS=["Gender","Race / ethnicity","Caste","Religion / belief","Nationality","Class / economic position","Family expectations"];
+const ROOTS={
+  truth:{q:"What is true?",m:"Bayesian evidence update with a bias check"},
+  want:{q:"What do I want?",m:"Five Whys with an emotion check"},
+  do:{q:"What should I do?",m:"Multi-lens decision analysis"},
+  self:{q:"Who am I?",m:"Values clarification and inherited-vs-chosen audit"},
+  path:{q:"Where am I going?",m:"PDSA experiment cycle"}};
+const KW={identity:/who am i|identity|myself|become|belong/i,purpose:/purpose|meaning|calling|mission/i,decision:/should i|stay or|leave|choose|choice|option|offer|decide/i,emotional:/feel|emotion|angry|sad|anxious|jealous|torn|guilt/i,relationship:/trust|partner|friend|boyfriend|girlfriend|husband|wife|love|relationship|cares? about/i,moral:/right or wrong|moral|ethic|fair|unfair|lie|cheat|duty/i,career:/job|career|study|major|degree|salary|money|business|income|debt|invest/i,information:/true|fake|source|news|claim|study says|evidence|believe/i,social:/tradition|culture|expectation|society|community|custom/i,future:/future|long.term|plan|years from now|what if/i,existential:/death|die|why are we here|life is|afterlife|mortality/i,politics:/vote|election|policy|tax|government|party|politician|subsid/i};
+const OV_KW={"Gender":/gender|woman|man\b|men\b|female|male|trans/i,"Race / ethnicity":/race|racial|ethnic|skin/i,"Caste":/caste/i,"Religion / belief":/relig|faith|god|pray|church|temple|mosque/i,"Nationality":/nation|immigra|citizen|country/i,"Class / economic position":/class|poor|rich|wealth/i,"Family expectations":/parents|family|in.laws/i};
+const LENSES=[
+  {id:"doable",name:"Easy to start",q:"How easily could I take a first step within 48 hours?",lo:"hard",hi:"right now",strength:"an easy way to start",fix:"Shrink the first step until it takes 10 minutes or less."},
+  {id:"strengths",name:"Uses my strengths",q:"How much does this use what I'm already good at?",lo:"outside my skills",hi:"home turf",strength:"strengths you already have",fix:"Start with the part you do well, or pair with someone who has the missing skill."},
+  {id:"sustain",name:"Staying power",q:"When it gets hard, how able would I be to keep going?",lo:"I'd burn out",hi:"I'd keep going",strength:"staying power",fix:"Define a minimum version you'd keep on bad days and set a check-in date."},
+  {id:"reversible",name:"Room to adjust",q:"How easy would it be to adjust or undo?",lo:"locked in",hi:"easy to change",strength:"room to adjust",fix:"Run a time-boxed trial (e.g. 2 weeks) before fully committing."},
+  {id:"values",name:"Fits my values",q:"How well does it fit what really matters to me?",lo:"clashes",hi:"deeply fits",strength:"a fit with what matters to you",fix:"Name exactly what feels off. Can the option be reshaped to fit?"},
+  {id:"growth",name:"Worth it either way",q:"Even if it disappoints, how much would I learn or gain?",lo:"nothing",hi:"a lot",strength:"something to gain whatever happens",fix:"Write what you want to learn, so it counts even if it doesn't work."},
+  {id:"support",name:"Support & resources",q:"How much help (people, money, time) do I have?",lo:"on my own",hi:"well backed",strength:"people and resources behind you",fix:"Ask one person for one specific thing this week."}];
+const VALUES=["Honesty","Freedom","Security","Family","Growth","Faith","Fairness","Creativity","Health","Adventure","Loyalty","Service","Achievement","Peace","Knowledge","Community","Independence","Kindness"];
+const KINDS={fact:{n:"Find out",c:"k-fact",act:1},choice:{n:"Decide",c:"k-choice",act:1},feel:{n:"Feel / process",c:"k-feel",act:0},time:{n:"Wait / time",c:"k-time",act:0}};
+const SEED={truth:["Facts I'm missing","Sources I can't judge","What's at stake if I'm wrong"],want:["What I feel","What others expect of me","What I practically need"],do:["Things I don't know yet","Constraints (time, money, people)","Values in conflict"],self:["What I inherited","What I chose","Pressures around me"],path:["Skills I'd need","Resources I'd need","Unknown unknowns"]};
+
+const MERMAID={
+ "Master flow":`flowchart TD
+  A([You: I am confused]) --> B[Tell: write it in your own words]
+  B --> C{Diagnose: which kind?}
+  C -->|facts| T[What is true?]
+  C -->|feelings| W[What do I want?]
+  C -->|choices| D[What should I do?]
+  C -->|identity| S[Who am I?]
+  C -->|future| P[Where am I going?]
+  T & W & D & S & P --> Z[Size it: disk tree of the problem]
+  Z --> M[Method workbench]
+  M --> N[Next step and review date]
+  N --> R{Review: clearer?}
+  R -->|yes| Done([Move on])
+  R -->|no| B`,
+ "Five roots":`flowchart LR
+  subgraph sgT["What is true?"]
+    t1[Claim] --> t2[Prior percent] --> t3[Evidence for and against] --> t4[Bayes update] --> t5[Cheapest test]
+  end
+  subgraph sgW["What do I want?"]
+    w1[Five Whys] --> w2[Intensity and one-week test] --> w3[Whose voice?] --> w4[Core want]
+  end
+  subgraph sgD["What should I do?"]
+    d1[Options] --> d2[Seven ability lenses] --> d3[Values collision] --> d4[Best equipped option]
+  end
+  subgraph sgS["Who am I?"]
+    s1[Core values] --> s2[Inherited vs chosen audit] --> s3[Own-words sentence]
+  end
+  subgraph sgP["Where am I going?"]
+    p1[Plan] --> p2[Do] --> p3[Check] --> p4[Act] --> p1
+  end`,
+ "Disk tree sizing":`flowchart TD
+  R[Problem root] --> B1[Branch: sub-problem]
+  R --> B2[Branch: sub-problem]
+  B1 --> L1[Leaf: weight 1 to 10 and kind]
+  B1 --> L2[Leaf]
+  B2 --> L3[Leaf]
+  L1 & L2 & L3 --> S[Roll weights up the tree]
+  S --> Q[Size label: Small, Medium, Large, Huge]
+  S --> K[Big rocks: pieces carrying 60 percent]
+  S --> A[Actionable share: find out and decide vs feel and wait]
+  K --> N[Start with the biggest actionable rock]`};
+
+/* ---------- state & helpers ---------- */
+const fresh=()=>({step:1,story:"",types:[],overlays:[],root:"",next:"",review:"7 days",
+  tree:{seedRoot:"",branches:[]},
+  truth:{claim:"",prior:50,ev:[{t:"",dir:1,str:2,rel:1},{t:"",dir:-1,str:2,rel:1}],change:"",test:""},
+  want:{whys:["","","","",""],intensity:5,week:"unsure",voice:"both",feelA:"",feelB:""},
+  do:{opts:["",""],phase:0,sc:[],vA:"",vB:"",lean:50,affected:"",public:"unsure"},
+  self:{vals:[],audit:{},pressure:5,sentence:""},
+  path:{goal:"",plan:50,p:"",d:"",c:"",a:""}});
+let S=fresh();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const store=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||"null");localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}};
+const CRISIS=/suicid|kill myself|end my life|self.?harm|hurt myself|don'?t want to (live|be alive)/i;
+const mm=s=>String(s||"").replace(/["\[\]\(\)\{\}<>#;|`\\&]/g," ").replace(/\s+/g," ").trim().slice(0,48);
+async function drawMermaid(el,code){try{const m=await Promise.race([window.__mm,new Promise((_,j)=>setTimeout(j,9000))]);const {svg}=await m.render("m"+Math.random().toString(36).slice(2),code);el.innerHTML=svg}catch(e){el.innerHTML=`<pre class="mono muted" style="text-align:left">${esc(code)}</pre>`}}
+
+function suggest(){return{t:TYPES.filter(x=>KW[x.id].test(S.story)).map(x=>x.id),o:OVERLAYS.filter(x=>OV_KW[x].test(S.story))}}
+function rootFromTypes(){if(!S.types.length)return"do";const c={};S.types.forEach(id=>{const r=TYPES.find(x=>x.id===id).root;c[r]=(c[r]||0)+1});if(S.overlays.length&&!S.types.includes("politics"))c.self=(c.self||0)+1;return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]}
+function go(n){S.step=n;render();$("engine").scrollIntoView({behavior:"smooth",block:"start"})}
+function crisisBanner(){return CRISIS.test(S.story)?`<div class="note crisis"><strong>What you wrote sounds heavy.</strong> You don't have to work through it alone. If you're in danger or thinking of harming yourself, please contact your local emergency number or a crisis line now (in the US, call or text 988; elsewhere, findahelpline.com). A person can help in ways this tool can't.</div>`:""}
+
+/* ---------- disk tree ---------- */
+function treeModel(){const b=S.tree.branches.map((br,bi)=>{const leaves=br.leaves.filter(l=>l.t.trim()).map(l=>({...l,size:+l.size||1}));return{name:br.name||"(unnamed)",leaves,total:leaves.reduce((s,l)=>s+l.size,0)}}).filter(x=>x.total>0);
+  const total=b.reduce((s,x)=>s+x.total,0);const all=b.flatMap(x=>x.leaves).sort((a,c)=>c.size-a.size);
+  let acc=0;const rocks=[];for(const l of all){if(acc>=total*.6)break;rocks.push(l);acc+=l.size}
+  const byKind={};all.forEach(l=>{byKind[l.kind]=(byKind[l.kind]||0)+l.size});
+  const act=(byKind.fact||0)+(byKind.choice||0);
+  return{b,total,all,rocks,byKind,actPct:total?Math.round(act/total*100):0,
+    label:total<15?"Small":total<35?"Medium":total<70?"Large":"Huge",
+    rockItem:all.find(l=>KINDS[l.kind].act)||null,topBranch:b.slice().sort((x,y)=>y.total-x.total)[0]||null}}
+function diskTreeHTML(m){if(!m.total)return`<p class="muted">Add a few pieces on the left and your tree appears here.</p>`;
+  const pct=n=>Math.round(n/m.total*100);const rockSet=new Set(m.rocks);
+  const row=(cls,name,size,color,kind)=>`<div class="dt-row ${cls}"><span class="dt-name" title="${esc(name)}">${esc(name)}</span><span class="dt-bar"><i class="${color}" style="width:${pct(size)}%"></i></span><span class="dt-size">${size}</span><span class="dt-pct">${pct(size)}%</span></div>`;
+  let h=`<div class="dt">${row("root","▾ "+(S.story.trim().slice(0,40)||"the problem"),m.total,"k-fact")}`;
+  m.b.slice().sort((a,c)=>c.total-a.total).forEach(b=>{h+=row("b","  ▾ "+b.name,b.total,"k-fact");b.leaves.slice().sort((a,c)=>c.size-a.size).forEach(l=>{h+=row("l"+(rockSet.has(l)?" rock":""),"└ "+l.t,l.size,KINDS[l.kind].c)})});
+  h+=`</div><div class="stack">${Object.entries(m.byKind).map(([k,v])=>`<i class="${KINDS[k].c}" style="width:${pct(v)}%"></i>`).join("")}</div>
+  <div class="legend">${Object.entries(KINDS).map(([k,v])=>`<span><i class="${v.c}"></i>${v.n} ${m.byKind[k]?pct(m.byKind[k])+"%":"0%"}</span>`).join("")}</div>`;return h}
+function sizeSummary(m){if(!m.total)return"";return`<p style="margin:10px 0 0"><span class="sizebadge">${m.label} problem</span> &nbsp;${m.total} weight across ${m.all.length} pieces. <strong>★ ${m.rocks.length} of ${m.all.length} pieces carry 60%</strong> of it. <strong>${m.actPct}%</strong> is actionable now (find out or decide); the rest needs feeling or time.</p>`}
+
+function ensureTree(){const t=S.tree;const hasText=t.branches.some(b=>b.leaves.some(l=>l.t.trim()));
+  if(t.seedRoot!==S.root&&!hasText){t.seedRoot=S.root;t.branches=[...SEED[S.root],...S.overlays].map(n=>({name:n,leaves:[{t:"",size:5,kind:"fact"}]}))}}
+function stepSize(){ensureTree();
+  $("app").innerHTML=`${crisisBanner()}<div class="panel"><h3>How big is this, really?</h3>
+  <p class="sub">Like checking what's eating your disk: break the confusion into branches, list specific pieces, and weigh each (1 tiny to 10 huge). Mark what kind of piece it is.</p>
+  <div id="tedit">${treeEditor()}</div></div>
+  <div class="panel"><h3>Your problem, as a disk tree</h3><div id="dtlive"></div></div>
+  <div class="nav"><button class="pill ghost" data-act="back1">Back</button><button class="pill" data-act="tonext" id="tonext">Open the workbench</button></div>`;liveTree()}
+function treeEditor(){return S.tree.branches.map((br,bi)=>`<div class="branch"><div class="row"><input type="text" class="bname" data-k="tree.branches.${bi}.name" value="${esc(br.name)}" aria-label="Branch name"><button class="pill sm ghost" data-act="rmbranch" data-b="${bi}" aria-label="Remove branch">✕</button></div>
+  ${br.leaves.map((l,li)=>`<div class="row leaf"><input type="text" data-k="tree.branches.${bi}.leaves.${li}.t" value="${esc(l.t)}" placeholder="A specific piece of this" aria-label="Piece">
+   <select data-k="tree.branches.${bi}.leaves.${li}.size" data-num="1" aria-label="Weight">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option ${+l.size===n?"selected":""}>${n}</option>`).join("")}</select>
+   <select data-k="tree.branches.${bi}.leaves.${li}.kind" aria-label="Kind">${Object.entries(KINDS).map(([k,v])=>`<option value="${k}" ${l.kind===k?"selected":""}>${v.n}</option>`).join("")}</select>
+   ${br.leaves.length>1?`<button class="pill sm ghost" data-act="rmleaf" data-b="${bi}" data-l="${li}" aria-label="Remove piece">✕</button>`:""}</div>`).join("")}
+  <button class="link" data-act="addleaf" data-b="${bi}">+ piece</button></div>`).join("")+`<button class="link" data-act="addbranch">+ branch</button>`}
+function liveTree(){const el=$("dtlive");if(!el)return;const m=treeModel();el.innerHTML=diskTreeHTML(m)+sizeSummary(m);const b=$("tonext");if(b)b.disabled=false}
+
+/* ---------- render ---------- */
+function render(){$("steps").innerHTML=[1,2,3,4,5].map(i=>`<span class="${i<=S.step?"on":""}"></span>`).join("");[null,step1,step2,stepSize,stepWork,stepResult][S.step]()}
+function step1(){const hist=store("cnfuzn_history")||[];
+  $("app").innerHTML=`<div class="panel"><h3>What's confusing you?</h3>
+  <p class="sub">A person, a situation, a belief, a feeling. Write it the way you'd tell a trusted friend.</p>
+  <textarea id="story" placeholder="e.g. My family expects me to follow a tradition I'm not sure I believe in, and I don't know what I actually want…">${esc(S.story)}</textarea>
+  <div class="nav"><span class="muted">${hist.length?`${hist.length} earlier session${hist.length>1?"s":""} saved on this device`:""}</span><button class="pill" id="go">Diagnose</button></div></div>
+  ${hist.length?`<div class="panel"><strong>Recent</strong><ul class="tight muted">${hist.slice(-4).reverse().map(h=>`<li>${esc(h.date)} · ${esc(h.root)} → ${esc(h.next||"…")}</li>`).join("")}</ul></div>`:""}`;
+  const chk=()=>{S.story=$("story").value;$("go").disabled=S.story.trim().length<3};$("story").oninput=chk;chk();
+  $("go").onclick=()=>{const s=suggest();S.types=s.t.slice(0,3);S.overlays=s.o;S.root="";S.tree.seedRoot="";go(2)}}
+function step2(){const s=suggest();if(!S.root)S.root=rootFromTypes();
+  $("app").innerHTML=`${crisisBanner()}<div class="panel"><h3>Diagnosis</h3>
+  <p class="sub">What kind of confusion is this? Dashed chips are my guesses from your words. Change freely; you know better.</p>
+  <div class="chips" id="types">${TYPES.map(t=>`<button class="chip ${S.types.includes(t.id)?"on":""} ${s.t.includes(t.id)&&!S.types.includes(t.id)?"sug":""}" data-t="${t.id}" title="${esc(t.q)}">${t.n}</button>`).join("")}</div>
+  <label>Identity layers involved (they often stack)</label>
+  <div class="chips" id="ovs">${OVERLAYS.map(o=>`<button class="chip ${S.overlays.includes(o)?"on":""} ${s.o.includes(o)&&!S.overlays.includes(o)?"sug":""}" data-o="${esc(o)}">${o}</button>`).join("")}</div></div>
+  <div class="panel"><h3>The root question underneath</h3><p class="sub">Most confusion comes down to one of five questions.</p>
+  <div class="chips" id="roots">${Object.entries(ROOTS).map(([k,r])=>`<button class="chip ${S.root===k?"on":""}" data-r="${k}">${r.q}</button>`).join("")}</div>
+  <p class="muted" style="margin-top:12px">Method: <strong>${ROOTS[S.root].m}</strong></p>
+  <div class="nav"><button class="pill ghost" id="back">Back</button><button class="pill" id="go">Size the problem</button></div></div>`;
+  const re=()=>{S.root=rootFromTypes();S.tree.seedRoot="";step2()};
+  $("types").onclick=e=>{const t=e.target.dataset.t;if(!t)return;const i=S.types.indexOf(t);i>=0?S.types.splice(i,1):S.types.push(t);re()};
+  $("ovs").onclick=e=>{const o=e.target.dataset.o;if(!o)return;const i=S.overlays.indexOf(o);i>=0?S.overlays.splice(i,1):S.overlays.push(o);re()};
+  $("roots").onclick=e=>{const r=e.target.dataset.r;if(!r)return;S.root=r;S.tree.seedRoot="";step2()};
+  $("back").onclick=()=>go(1);$("go").onclick=()=>go(3)}
+
+/* ---- workbenches ---- */
+function slider(k,label,lo,hi,val,suffix=""){return`<div class="q"><span>${label}</span><span class="val" id="sv-${k}">${val}${suffix}</span></div><input type="range" min="0" max="${suffix==="%"?100:10}" value="${val}" data-k="${k}" data-num="1" data-sfx="${suffix}" aria-label="${esc(label)}"><div class="ends"><span>${lo}</span><span>${hi}</span></div>`}
+function truthPost(){const t=S.truth,p=clamp(t.prior,1,99);let odds=p/(100-p);const base=[1,1.5,3,6],rel=[.5,1,1.25];t.ev.filter(e=>e.t.trim()).forEach(e=>{const lr=Math.pow(base[e.str],rel[e.rel]);odds*=e.dir>0?lr:1/lr});return odds/(1+odds)*100}
+function wTruth(){const t=S.truth;return`<div class="panel"><h3>What is true? An evidence ledger</h3><p class="sub">State the claim. List evidence on both sides. Rate each piece honestly.</p>
+  <label>The claim</label><input type="text" data-k="truth.claim" value="${esc(t.claim)}" placeholder="e.g. This person genuinely cares about me / this policy will lower my costs">
+  ${slider("truth.prior","Before looking at evidence, how likely do you think it is?","unlikely","certain",t.prior,"%")}
+  <label>Evidence</label><div>${t.ev.map((e,i)=>`<div class="row"><input type="text" data-k="truth.ev.${i}.t" value="${esc(e.t)}" placeholder="What you observed or read" aria-label="Evidence ${i+1}">
+  <select data-k="truth.ev.${i}.dir" data-num="1"><option value="1" ${e.dir>0?"selected":""}>supports</option><option value="-1" ${e.dir<0?"selected":""}>contradicts</option></select>
+  <select data-k="truth.ev.${i}.str" data-num="1"><option value="1" ${e.str==1?"selected":""}>weak</option><option value="2" ${e.str==2?"selected":""}>moderate</option><option value="3" ${e.str==3?"selected":""}>strong</option></select>
+  <select data-k="truth.ev.${i}.rel" data-num="1"><option value="0" ${e.rel==0?"selected":""}>shaky source</option><option value="1" ${e.rel==1?"selected":""}>ok source</option><option value="2" ${e.rel==2?"selected":""}>solid source</option></select>
+  ${t.ev.length>2?`<button class="pill sm ghost" data-act="rmev" data-i="${i}">✕</button>`:""}</div>`).join("")}</div>
+  <button class="link" data-act="addev">+ Add evidence</button><div class="note good" id="live"></div>
+  <p class="muted">Count independent evidence only. Five articles repeating one source are one piece of evidence.</p>
+  <label>What would change my mind?</label><input type="text" data-k="truth.change" value="${esc(t.change)}" placeholder="The one fact that would flip my view">
+  <label>Cheapest test or question that would settle it</label><input type="text" data-k="truth.test" value="${esc(t.test)}" placeholder="e.g. Ask directly; check the primary source"></div>`}
+function liveTruth(){const el=$("live");if(!el)return;const p=truthPost(),t=S.truth;const pro=t.ev.some(e=>e.t.trim()&&e.dir>0),con=t.ev.some(e=>e.t.trim()&&e.dir<0);
+  el.innerHTML=`Your confidence, updated: <strong>${Math.round(p)}%</strong> (from ${t.prior}%)<div class="bar2" style="margin-top:8px"><i style="width:${p}%"></i></div>${(pro&&!con)||(con&&!pro)?`<br>⚠ Evidence only on one side. Add the strongest case <em>against</em> your current lean.`:""}`}
+function resTruth(){const t=S.truth,p=Math.round(truthPost());const v=p>=70?"Leans true":p<=30?"Leans false":"Genuinely unresolved";
+  return{head:`${v}: ${p}% confident`,ins:[`You started at ${t.prior}% and evidence moved you to ${p}%.`,t.change?`What would change your mind: ${t.change}.`:"Name what would change your mind; it's the best protection against bias."],
+  fixes:[t.test?`Cheapest test: ${t.test}`:"Find the single cheapest piece of evidence that would move this number most.",p>30&&p<70?"A middle number means gather evidence, not decide. Don't act on a coin flip about a fact.":"Even a confident number is a lean. Keep the door open for a disconfirming fact."],
+  aff:`Not knowing yet is an accurate state, not a failure. You put a number on it and named what would change it. That's how careful thinkers work.`,step:t.test||""}}
+function wWant(){const w=S.want;return`<div class="panel"><h3>What do I want? Five Whys</h3><p class="sub">Start with what you think you want, then keep asking "why?" The last answer is usually the real want.</p>
+  ${w.whys.map((x,i)=>`<label>${i===0?"I think I want…":`Why does that matter? (${i})`}</label><input type="text" data-k="want.whys.${i}" value="${esc(x)}">`).join("")}</div>
+  <div class="panel"><h3>Want or reaction?</h3>${slider("want.intensity","How intense is the feeling right now?","calm","overwhelming",w.intensity)}
+  <label>Would I still want this in a week?</label><select data-k="want.week"><option value="yes" ${w.week==="yes"?"selected":""}>Yes</option><option value="unsure" ${w.week==="unsure"?"selected":""}>Not sure</option><option value="no" ${w.week==="no"?"selected":""}>Probably not</option></select>
+  <label>Whose voice is this?</label><select data-k="want.voice"><option value="mine" ${w.voice==="mine"?"selected":""}>Mine</option><option value="other" ${w.voice==="other"?"selected":""}>Someone else's expectation</option><option value="both" ${w.voice==="both"?"selected":""}>Both mixed together</option></select>
+  <label>Two feelings at once? (optional)</label><div class="row"><input type="text" data-k="want.feelA" value="${esc(w.feelA)}" placeholder="Feeling A"><input type="text" data-k="want.feelB" value="${esc(w.feelB)}" placeholder="Feeling B"></div></div>`}
+function resWant(){const w=S.want,core=[...w.whys].reverse().find(x=>x.trim())||"";const hot=w.intensity>=7||w.week==="no";
+  return{head:core?`The want underneath: “${core.trim()}”`:"Keep asking why to find the want underneath",
+  ins:[hot?"The feeling is intense or may fade. That's a reaction signal, not a verdict.":"The feeling looks stable enough to take seriously.",w.voice==="other"?"Part of this is someone else's expectation. Separate 'they want' from 'I want'.":w.voice==="both"?"Your own wish and outside expectation are mixed. Try finishing: 'If nobody would ever know, I would…'":"You describe this as your own voice. Good."].concat(w.feelA&&w.feelB?[`Holding both “${w.feelA}” and “${w.feelB}” is normal. Each points to a need; ask what each is protecting.`]:[]),
+  fixes:[hot?"Wait 24 to 72 hours before any irreversible move. Do something small and reversible meanwhile.":"Test the want with a small real-world step instead of more thinking."],
+  aff:`Two minds pulling at once means you care about more than one thing. That's not weakness; it's what there is to sort out.`,step:hot?"Write the feeling down, then revisit it in 48 hours.":core?`Do one small thing that moves toward: ${core.trim()}`:""}}
+function doScore(i){const a=S.do.sc[i]||{};return Math.round(LENSES.reduce((s,l)=>s+(a[l.id]??5),0)/LENSES.length*10)}
+function wDo(){const d=S.do;
+  if(d.phase===0)return`<div class="panel"><h3>What should I do? Options</h3><p class="sub">List your options (2 to 5). "Wait" and "try a small version" are valid.</p>
+  ${d.opts.map((o,i)=>`<div class="row"><input type="text" data-k="do.opts.${i}" value="${esc(o)}" placeholder="Option ${i+1}" aria-label="Option ${i+1}">${d.opts.length>2?`<button class="pill sm ghost" data-act="rmopt" data-i="${i}">✕</button>`:""}</div>`).join("")}
+  ${d.opts.length<5?`<button class="link" data-act="addopt">+ Add option</button> · `:""}<button class="link" data-act="starter">Use a starter set</button>
+  <label>If values collide (optional)</label><div class="row"><input type="text" data-k="do.vA" value="${esc(d.vA)}" placeholder="Value A (e.g. loyalty)"><input type="text" data-k="do.vB" value="${esc(d.vB)}" placeholder="Value B (e.g. honesty)"></div>
+  ${slider("do.lean","Today, which weighs more?","A","B",d.lean,"%")}
+  <label>Who else is affected?</label><input type="text" data-k="do.affected" value="${esc(d.affected)}" placeholder="People, groups, your future self">
+  <label>Would I be comfortable if this choice were public?</label><select data-k="do.public"><option value="yes">Yes</option><option value="unsure" selected>Not sure</option><option value="no">No</option></select>
+  <div class="nav"><span></span><button class="pill" data-act="rate">Rate my options</button></div></div>`;
+  return`<p class="muted">Rate your <strong>ability to act</strong> on each option, not whether it will work out. Nobody can know that.</p>`+d.opts.map((o,i)=>!o.trim()?"":`<div class="panel"><h3>${esc(o)}</h3>${LENSES.map(l=>{const v=(d.sc[i]||{})[l.id]??5;return`<div class="q"><span>${l.q}</span><span class="val" id="sv-do.sc.${i}.${l.id}">${v}</span></div><input type="range" min="0" max="10" value="${v}" data-k="do.sc.${i}.${l.id}" data-num="1" aria-label="${esc(o)}: ${l.name}"><div class="ends"><span>${l.lo}</span><span>${l.hi}</span></div>`}).join("")}</div>`).join("")+`<button class="link" data-act="editopts">← Edit options</button>`}
+function resDo(){const d=S.do;const r=d.opts.map((o,i)=>({n:o.trim(),i,p:doScore(i)})).filter(x=>x.n).sort((a,b)=>b.p-a.p);const w=r[0],s2=r[1];if(!w)return{head:"Add at least two options",ins:[],fixes:[],aff:"",step:""};
+  const low=w.p<50,close=s2&&w.p-s2.p<=6;const sc=d.sc[w.i]||{};const strong=LENSES.filter(l=>(sc[l.id]??5)>=7).slice(0,3),weak=LENSES.filter(l=>(sc[l.id]??5)<=4).slice(0,2);
+  const ins=[`Readiness to act: ${r.map(x=>`${x.n} ${x.p}`).join(" · ")} (out of 100; about you, not the odds).`];
+  if(close&&!low)ins.push("The top two are nearly tied. Break the tie by reversibility, or by which you feel lighter about.");
+  if(d.vA&&d.vB)ins.push(`Values in tension: ${d.vA} vs ${d.vB}. Today you lean ${d.lean<45?d.vA:d.lean>55?d.vB:"toward neither clearly"}. Look for an option that honors both partly.`);
+  if(d.public==="no")ins.push("You wouldn't be comfortable making this public. Treat that as a moral alarm worth examining.");
+  if(d.affected.trim())ins.push(`Affected: ${d.affected.trim()}. Consider telling or asking them.`);
+  return{head:low?"Nothing is easy to act on yet. Try a smaller version":`Best equipped to act: ${close?w.n+" / "+s2.n:w.n}`,ins,
+  fixes:low?["Add a 2-week trial, one conversation or one experiment as an option, then re-rate."]:weak.map(l=>`${l.name}: ${l.fix}`),
+  aff:low?`Feeling stuck isn't a flaw in you. Every path on the list asks more than you can comfortably give right now. That's useful information: shrink an option until it fits.`:`Choosing “${w.n}” isn't a gamble. It's the path where you're best equipped to act${strong.length?`: you already have ${strong.map(l=>l.strength).join(", ")}`:""}. You don't need certainty, only a ready next step.`,step:""}}
+function wSelf(){const s=S.self;return`<div class="panel"><h3>Who am I? Values first</h3><p class="sub">Choose up to five values you'd defend even when it's costly.</p>
+  <div class="chips">${VALUES.map(v=>`<button class="chip ${s.vals.includes(v)?"on":""}" data-v="${v}">${v}</button>`).join("")}</div></div>
+  <div class="panel"><h3>Inherited vs chosen</h3><p class="sub">For each layer, what did you receive, and what do <em>you</em> want to do with it? Undecided is a valid answer.</p>
+  ${S.overlays.length?S.overlays.map(o=>{const a=s.audit[o]||(s.audit[o]={state:"Undecided",note:""});return`<label>${esc(o)}</label><div class="chips" data-ov="${esc(o)}">${["Keep","Question","Release","Undecided"].map(x=>`<button class="chip ${a.state===x?"on":""}" data-st="${x}">${x}</button>`).join("")}</div><input type="text" style="margin-top:8px" data-k="self.audit.${esc(o)}.note" value="${esc(a.note)}" placeholder="What was expected of me / what I actually feel">`}).join(""):`<p class="muted">No identity layers selected. You can go back to add some, or continue with values alone.</p>`}
+  ${slider("self.pressure","How much outside pressure shapes your answers?","little","a lot",s.pressure)}
+  <label>Finish the sentence: "If nobody were watching or judging, I would…"</label><textarea data-k="self.sentence">${esc(s.sentence)}</textarea></div>`}
+function resSelf(){const s=S.self,a=Object.entries(s.audit).filter(([o])=>S.overlays.includes(o));const g=st=>a.filter(([,x])=>x.state===st).map(([o])=>o);
+  const ins=[s.vals.length?`Your core values: ${s.vals.join(", ")}.`:"Choose a few values; they are the compass when expectations conflict."];
+  if(g("Keep").length)ins.push(`Keeping: ${g("Keep").join(", ")}.`);if(g("Question").length)ins.push(`Questioning: ${g("Question").join(", ")}. That is legitimate and doesn't require a verdict today.`);
+  if(g("Release").length)ins.push(`Releasing: ${g("Release").join(", ")}. Consider how you'll handle the relationships involved.`);
+  if(s.pressure>=7)ins.push("Outside pressure is high. Your answers may reflect others' voices. Revisit in a calmer moment.");
+  if(s.sentence.trim())ins.push(`In your own words: “If nobody were watching, I would ${s.sentence.trim().replace(/^i would\s*/i,"")}”`);
+  return{head:s.vals.length?`You stand for: ${s.vals.slice(0,3).join(", ")}${s.vals.length>3?"…":""}`:"Your values are the starting point",ins,
+  fixes:["Identity isn't solved in one sitting. Re-run this in 30 days and compare.","Talk to one person who holds a different view and listen without needing to decide."],
+  aff:`Questioning what you inherited isn't betrayal. It's how a belief becomes yours instead of just handed to you. You can keep, change or drop things at your own pace.`,step:s.sentence.trim()?`Take one small action consistent with: ${s.sentence.trim()}`:""}}
+function wPath(){const p=S.path;return`<div class="panel"><h3>Where am I going? A small experiment</h3><p class="sub">You can't think your way to the future. Run a small, cheap test (Plan → Do → Check → Act).</p>
+  <label>The direction I'm unsure about</label><input type="text" data-k="path.goal" value="${esc(p.goal)}" placeholder="e.g. Move into design / relocate / start a business">
+  ${slider("path.plan","How much should I plan vs adapt as I go?","adapt","plan",p.plan,"%")}
+  <label>Plan: the smallest real test</label><input type="text" data-k="path.p" value="${esc(p.p)}" placeholder="e.g. Spend a weekend building one design project">
+  <label>Do: when exactly?</label><input type="text" data-k="path.d" value="${esc(p.d)}" placeholder="e.g. This Saturday, 10am to 2pm">
+  <label>Check: what will I measure or notice?</label><input type="text" data-k="path.c" value="${esc(p.c)}" placeholder="e.g. Energy, time flew by, would I do it again?">
+  <label>Act: what I'll do with each result</label><input type="text" data-k="path.a" value="${esc(p.a)}" placeholder="e.g. If energized, do a second project; if drained, drop it"></div>`}
+function resPath(){const p=S.path;return{head:p.p?`Experiment: ${p.p}`:"Design one small experiment",
+  ins:[p.plan>=60?"You lean toward planning. Fine for high-cost, hard-to-reverse moves; cap planning at a set date.":p.plan<=40?"You lean toward adapting. Fine for cheap, reversible moves; keep a check-in date so you actually learn.":"A mix of planning and adapting suits most real situations.",p.c?`You'll check: ${p.c}.`:"Decide in advance what result would count as a yes or a no.",p.a?`Decision rule: ${p.a}`:"Write your decision rule before you see the result."],
+  fixes:["Choose a test that costs little, takes under two weeks, and teaches something either way."],
+  aff:`You don't have to know you're right, only to find out cheaply. A small test turns "am I making the right decision?" into evidence you can use.`,step:p.d&&p.p?`${p.p} (${p.d})`:p.p}}
+const WB={truth:wTruth,want:wWant,do:wDo,self:wSelf,path:wPath},RES={truth:resTruth,want:resWant,do:resDo,self:resSelf,path:resPath};
+function stepWork(){$("app").innerHTML=`${crisisBanner()}<p class="muted" style="margin:0 0 10px">Root question: <strong>${ROOTS[S.root].q}</strong> · ${ROOTS[S.root].m}</p>${WB[S.root]()}
+  ${S.root==="do"&&S.do.phase===0?`<div class="nav"><button class="pill ghost" data-act="back3">Back</button><span></span></div>`:`<div class="nav"><button class="pill ghost" data-act="back3">Back</button><button class="pill" data-act="finish">Show my path</button></div>`}`;
+  if(S.root==="truth")liveTruth()}
+
+function journeyCode(r){const m=treeModel();const types=S.types.map(id=>TYPES.find(t=>t.id===id).n).join(" + ")||"Unsorted";
+  const lines=[`flowchart LR`,`  A["${mm(S.story)||"My confusion"}"] --> B["${mm(types)}"]`,`  B --> C{"${mm(ROOTS[S.root].q)}"}`,`  C --> D["${mm(ROOTS[S.root].m)}"]`];
+  let prev="D";if(m.total){lines.push(`  ${prev} --> E["${m.label} problem: ${m.total} across ${m.all.length} pieces"]`);prev="E";
+    if(m.rockItem){lines.push(`  ${prev} --> F["Biggest rock: ${mm(m.rockItem.t)}"]`);prev="F"}}
+  lines.push(`  ${prev} --> G(["Next: ${mm(S.next)||"one small step"}"])`,`  G --> H["Review in ${mm(S.review)}"]`,`  classDef hot fill:#efeafe,stroke:#774aff`,`  class C,G hot`);return lines.join("\n")}
+function stepResult(){const r=RES[S.root]();const m=treeModel();if(!S.next){S.next=r.step||(m.rockItem?`Start with: ${m.rockItem.t}`:"")}
+  $("app").innerHTML=`${crisisBanner()}<div class="panel result"><p class="muted" style="margin:0">${ROOTS[S.root].q} · ${ROOTS[S.root].m}</p><p class="big">${esc(r.head)}</p><p style="margin:0">${esc(r.aff)}</p></div>
+  ${m.total?`<div class="panel"><h3>Size of the problem</h3>${diskTreeHTML(m)}${sizeSummary(m)}${m.rockItem?`<p style="margin:10px 0 0"><strong>Biggest actionable rock:</strong> ${esc(m.rockItem.t)} <span class="muted">(${KINDS[m.rockItem.kind].n}, weight ${m.rockItem.size})</span></p>`:""}</div>`:""}
+  ${r.ins.length?`<div class="panel"><h3>What I see</h3><ul class="tight">${r.ins.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${r.fixes.length?`<div class="panel"><h3>To make it easier</h3><ul class="tight">${r.fixes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  <div class="panel"><h3>Your next step</h3><p class="sub">Small enough to do in 10 minutes. Motion creates clarity.</p>
+  <input type="text" id="next" value="${esc(S.next)}" placeholder="e.g. Send one message / write one page / ask one question">
+  <label>Review this in</label><select id="rev">${["2 days","7 days","14 days","30 days"].map(x=>`<option ${S.review===x?"selected":""}>${x}</option>`).join("")}</select>
+  <div class="nav"><button class="pill ghost" data-act="back4">Adjust</button><button class="pill" id="commit">I'll do it</button></div><div id="done"></div></div>
+  <div class="panel"><h3>Your path, as a flow</h3><div class="mm" id="journey">Drawing…</div></div>
+  <p style="text-align:center"><button class="link" data-act="restart">Start a new confusion</button></p>`;
+  const redraw=()=>drawMermaid($("journey"),journeyCode(r));redraw();
+  $("next").oninput=e=>{S.next=e.target.value};$("next").onchange=redraw;$("rev").onchange=e=>{S.review=e.target.value;redraw()};
+  $("commit").onclick=()=>{if(!S.next.trim()){$("next").focus();return}
+    const h=store("cnfuzn_history")||[];h.push({date:new Date().toLocaleDateString(),root:ROOTS[S.root].q,next:S.next.trim()});store("cnfuzn_history",h.slice(-20));
+    const text=`cnfuzn.ai — ${ROOTS[S.root].q}\n${r.head}\n${m.total?`Size: ${m.label} (${m.total}); ${m.rocks.length} of ${m.all.length} pieces carry 60%\n`:""}Next step: ${S.next.trim()}\nReview in ${S.review}.`;
+    $("done").innerHTML=`<div class="commit"><strong>Committed.</strong><br>${esc(S.next)} · review in ${esc(S.review)}<br><span class="muted">You don't have to be sure. You just have to begin.</span><br><button class="link" id="copy">Copy my plan</button></div>`;
+    $("copy").onclick=()=>{try{navigator.clipboard.writeText(text);$("copy").textContent="Copied"}catch(e){$("copy").textContent="Copy failed"}}}}
+
+/* ---------- delegated events ---------- */
+$("engine").addEventListener("input",e=>{const t=e.target,k=t.dataset.k;if(!k)return;const v=t.dataset.num?+t.value:t.value;
+  const p=k.split(".");let o=S;while(p.length>1){const key=p.shift();if(o[key]===undefined)o[key]=/^\d+$/.test(p[0])?[]:{};o=o[key]}o[p[0]]=v;
+  if(t.type==="range"){const el=$("sv-"+k);if(el)el.textContent=v+(t.dataset.sfx||"")}
+  if(S.step===3)liveTree();if(S.step===4&&S.root==="truth")liveTruth()});
+$("engine").addEventListener("change",e=>{const t=e.target;if(t.tagName==="SELECT"&&t.dataset.k){if(S.step===3)liveTree();if(S.step===4&&S.root==="truth")liveTruth()}});
+$("engine").addEventListener("click",e=>{const t=e.target,a=t.dataset.act;
+  if(t.dataset.v){const i=S.self.vals.indexOf(t.dataset.v);if(i>=0)S.self.vals.splice(i,1);else{if(S.self.vals.length>=5)S.self.vals.shift();S.self.vals.push(t.dataset.v)}return stepWork()}
+  if(t.dataset.st){S.self.audit[t.parentElement.dataset.ov].state=t.dataset.st;return stepWork()}
+  if(!a)return;const i=+t.dataset.i,b=+t.dataset.b,l=+t.dataset.l;
+  ({addev:()=>{S.truth.ev.push({t:"",dir:1,str:2,rel:1});stepWork()},rmev:()=>{S.truth.ev.splice(i,1);stepWork()},
+  addopt:()=>{S.do.opts.push("");stepWork()},rmopt:()=>{S.do.opts.splice(i,1);stepWork()},
+  starter:()=>{S.do.opts=["Go for it fully","Try a small version first","Wait / not now"];stepWork()},
+  rate:()=>{if(S.do.opts.filter(o=>o.trim()).length<2)return;S.do.phase=1;S.do.opts.forEach((o,j)=>{S.do.sc[j]=S.do.sc[j]||Object.fromEntries(LENSES.map(x=>[x.id,5]))});stepWork()},
+  editopts:()=>{S.do.phase=0;stepWork()},
+  addleaf:()=>{S.tree.branches[b].leaves.push({t:"",size:5,kind:"fact"});stepSize()},
+  rmleaf:()=>{S.tree.branches[b].leaves.splice(l,1);stepSize()},
+  addbranch:()=>{S.tree.branches.push({name:"New branch",leaves:[{t:"",size:5,kind:"fact"}]});stepSize()},
+  rmbranch:()=>{S.tree.branches.splice(b,1);stepSize()},
+  back1:()=>go(2),tonext:()=>go(4),back3:()=>go(3),back4:()=>go(4),finish:()=>{S.next="";go(5)},
+  restart:()=>{S=fresh();render()}}[a]||(()=>{}))()});
+
+/* ---------- hero terminal ---------- */
+const tout=$("tout"),tin=$("tin");const tp=s=>{tout.textContent+="\n"+s;tout.scrollTop=tout.scrollHeight};
+const DEMO=`▾ 100%  My family expects a tradition I doubt      42
+  ▾  55%  What I inherited                       23
+    └  31%  Whether I believe it                 13 ★ find out
+    └  24%  What my parents would feel           10   feel
+  ▾  45%  What I chose                           19
+    └  29%  Which practices still mean something 12 ★ decide
+    └  17%  How to tell my family                 7   decide`;
+const CMDS={help:()=>"Commands: help · types · roots · demo · diagnose <your text> · start · clear",
+  types:()=>TYPES.map(t=>"• "+t.n+" → "+ROOTS[t.root].q).join("\n"),
+  roots:()=>Object.values(ROOTS).map(r=>"• "+r.q+" — "+r.m).join("\n"),
+  demo:()=>"A disk-tree of one confusion (size · ★ = biggest rocks):\n"+DEMO,
+  start:()=>{document.getElementById("engine").scrollIntoView({behavior:"smooth"});return"Opening the engine ↓"},
+  clear:()=>{tout.textContent="";return null}};
+tin.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const v=tin.value.trim();tin.value="";if(!v)return;tp("$ "+v);
+  const [c,...rest]=v.split(/\s+/);
+  if(c==="diagnose"){const txt=rest.join(" ");if(!txt)return tp("Usage: diagnose <what is confusing you>");const s0=S.story,t0=S.types,o0=S.overlays;S.story=txt;const s=suggest();S.types=s.t;S.overlays=s.o;const rt=rootFromTypes();S.story=s0;S.types=t0;S.overlays=o0;
+    const ty=s.t.map(id=>TYPES.find(t=>t.id===id).n);
+    return tp(`Kinds: ${ty.join(", ")||"unclear (try the engine)"}${s.o.length?"\nIdentity layers: "+s.o.join(", "):""}\nRoot question: ${ROOTS[rt].q}\nMethod: ${ROOTS[rt].m}`)}
+  const f=CMDS[c.toLowerCase()];if(!f)return tp(`Unknown command "${c}". Try help.`);const o=f();if(o)tp(o)});
+
+/* ---------- hero video: soft, only while the header is on screen ---------- */
+(()=>{const card=$("herocard"),v=$("hv"),c=navigator.connection||{};
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches||c.saveData||/(^|-)2g$/.test(c.effectiveType||""))return;
+  const s=document.createElement("source");s.src=innerWidth>900?"assets/journey.mp4":"assets/journey-bg.mp4";s.type="video/mp4";v.appendChild(s);
+  v.addEventListener("playing",()=>card.classList.add("vid"),{once:true});v.load();
+  let vis=true;const go=()=>{if(vis&&!document.hidden)v.play().catch(()=>{});else v.pause()};
+  new IntersectionObserver(e=>{vis=e[0].isIntersecting;go()},{threshold:.05}).observe(card);
+  document.addEventListener("visibilitychange",go);go();})();
+
+/* ---------- nav: highlight the section in view ---------- */
+(()=>{const links=[...document.querySelectorAll("#navlinks a")],map=new Map(links.map(a=>[a.getAttribute("href").slice(1),a]));
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove("active"));const a=map.get(e.target.id);if(a)a.classList.add("active")}})},{rootMargin:"-45% 0px -50% 0px"});
+  map.forEach((a,id)=>{const el=document.getElementById(id);if(el)io.observe(el)});})();
+
+/* ---------- responsive nav ---------- */
+const nav=$("nav"),burger=$("burger");
+const setNav=open=>{nav.classList.toggle("open",open);burger.setAttribute("aria-expanded",open)};
+burger.onclick=()=>setNav(!nav.classList.contains("open"));
+$("navlinks").onclick=e=>{if(e.target.tagName==="A")setNav(false)};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")setNav(false)});
+document.addEventListener("click",e=>{if(!nav.contains(e.target))setNav(false)});
+addEventListener("resize",()=>{if(innerWidth>820)setNav(false)});
+
+/* ---------- static sections ---------- */
+$("maprow").innerHTML=TYPES.map(t=>`<div class="card"><span class="num">→ ${ROOTS[t.root].q.toUpperCase()}</span><h3>${t.n}</h3><p>${t.q}</p></div>`).join("");
+const tabs=Object.keys(MERMAID);$("mtabs").innerHTML=tabs.map((k,i)=>`<button class="chip ${i?"":"on"}" data-m="${k}">${k}</button>`).join("");
+const showM=k=>{[...$("mtabs").children].forEach(c=>c.classList.toggle("on",c.dataset.m===k));drawMermaid($("mmview"),MERMAID[k])};
+$("mtabs").onclick=e=>{if(e.target.dataset.m)showM(e.target.dataset.m)};showM(tabs[0]);
+render();
+</script>
+</body>
+</html>

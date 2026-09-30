@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cnfuzn.ai — how it flows</title>
+<style>
+  html,body{margin:0;background:#f6f5fa}
+  #stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:Geist,"Helvetica Neue",system-ui,sans-serif;color:#1c1c22}
+  .bg{position:absolute;inset:0;background:
+    radial-gradient(40% 45% at 15% 15%,#774aff 0,transparent 70%),
+    radial-gradient(38% 42% at 90% 30%,#ff784b 0,transparent 70%),
+    radial-gradient(50% 45% at 50% 110%,#254571 0,transparent 70%),
+    radial-gradient(28% 30% at 25% 85%,rgba(255,176,221,.8) 0,transparent 70%),#2c3c8f}
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .eyebrow{font-size:26px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:24px}
+  h1{font-size:150px;line-height:1;letter-spacing:-.04em;margin:0;color:#fff;font-weight:600}
+  h1 em{font-style:normal;color:#ffb0dd}
+  h2{font-size:84px;letter-spacing:-.03em;text-transform:uppercase;margin:0 0 56px;color:#fff;font-weight:600}
+  .row{display:flex;align-items:center;gap:18px}
+  .node{flex:none;box-sizing:border-box;width:280px;padding:30px 22px;border-radius:32px;background:rgba(255,255,255,.95);box-shadow:0 20px 60px rgba(20,20,60,.3)}
+  .node b{display:block;font-size:22px;letter-spacing:.14em;color:#774aff;margin-bottom:8px}
+  .node span{font-size:34px;font-weight:600;line-height:1.15}
+  .arrow{font-size:48px;color:#fff}
+  .roots{display:flex;gap:16px;margin-top:48px}
+  .chip{padding:16px 30px;border-radius:999px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.6);color:#fff;font-size:30px;font-weight:500}
+  .dt{width:1300px;padding:40px 48px;border-radius:32px;background:rgba(255,255,255,.96);text-align:left;font-family:"Geist Mono",Consolas,monospace;box-shadow:0 20px 60px rgba(20,20,60,.3)}
+  .dtr{display:grid;grid-template-columns:520px 1fr 90px;gap:24px;align-items:center;font-size:30px;margin:14px 0}
+  .dtr .track{height:26px;border-radius:8px;background:#e3e1e8;overflow:hidden}
+  .dtr .fill{height:100%;width:0;border-radius:8px}
+  .dtr .pct{text-align:right;color:#8a8890}
+  .dtr.l{padding-left:40px}
+  .note2{margin-top:36px;font-size:36px;color:#fff}
+  .note2 b{color:#ffb0dd}
+  .sub{font-size:44px;color:rgba(255,255,255,.9);max-width:1200px;margin-top:28px;line-height:1.3}
+</style>
+</head>
+<body>
+<div id="stage" data-composition-id="confusion-flow" data-start="0" data-width="1920" data-height="1080">
+
+  <div class="bg clip" data-start="0" data-duration="24" data-track-index="0"></div>
+
+  <!-- Scene 1: title -->
+  <div id="s1" class="scene clip" data-start="0" data-duration="4" data-track-index="1">
+    <div class="eyebrow" id="s1e">cnfuzn.ai</div>
+    <h1 id="s1h">Confusion,<br><em>sized</em> and solved.</h1>
+  </div>
+
+  <!-- Scene 2: master flow (mirrors diagrams/master-flow.mmd) -->
+  <div id="s2" class="scene clip" data-start="4" data-duration="10" data-track-index="1">
+    <h2 id="s2h">How it flows</h2>
+    <div class="row">
+      <div class="node" id="n1"><b>01</b><span>Tell it in your own words</span></div>
+      <div class="arrow" id="a1">→</div>
+      <div class="node" id="n2"><b>02</b><span>Diagnose the kind</span></div>
+      <div class="arrow" id="a2">→</div>
+      <div class="node" id="n3"><b>03</b><span>Size it: disk tree</span></div>
+      <div class="arrow" id="a3">→</div>
+      <div class="node" id="n4"><b>04</b><span>Apply the method</span></div>
+      <div class="arrow" id="a4">→</div>
+      <div class="node" id="n5"><b>05</b><span>One next step</span></div>
+    </div>
+    <div class="roots">
+      <div class="chip r">What is true?</div><div class="chip r">What do I want?</div><div class="chip r">What should I do?</div><div class="chip r">Who am I?</div><div class="chip r">Where am I going?</div>
+    </div>
+  </div>
+
+  <!-- Scene 3: disk tree (mirrors diagrams/disk-tree-sizing.mmd) -->
+  <div id="s3" class="scene clip" data-start="14" data-duration="7" data-track-index="1">
+    <h2 id="s3h">Size the problem</h2>
+    <div class="dt">
+      <div class="dtr" id="d0"><span>▾ My family expects a tradition</span><div class="track"><div class="fill" data-w="100" style="background:#774aff"></div></div><span class="pct">100%</span></div>
+      <div class="dtr" id="d1"><span>&nbsp;&nbsp;▾ What I inherited</span><div class="track"><div class="fill" data-w="55" style="background:#774aff"></div></div><span class="pct">55%</span></div>
+      <div class="dtr l" id="d2"><span>└ Do I believe it ★</span><div class="track"><div class="fill" data-w="31" style="background:#774aff"></div></div><span class="pct">31%</span></div>
+      <div class="dtr l" id="d3"><span>└ Parents' feelings</span><div class="track"><div class="fill" data-w="24" style="background:#ffb0dd"></div></div><span class="pct">24%</span></div>
+      <div class="dtr" id="d4"><span>&nbsp;&nbsp;▾ What I chose</span><div class="track"><div class="fill" data-w="45" style="background:#774aff"></div></div><span class="pct">45%</span></div>
+      <div class="dtr l" id="d5"><span>└ Which practices still mean something ★</span><div class="track"><div class="fill" data-w="29" style="background:#ff784b"></div></div><span class="pct">29%</span></div>
+    </div>
+    <div class="note2" id="s3n"><b>★</b> The biggest rocks carry 60% of the weight. Start there.</div>
+  </div>
+
+  <!-- Scene 4: outro -->
+  <div id="s4" class="scene clip" data-start="21" data-duration="3" data-track-index="1">
+    <h1 id="s4h" style="font-size:120px">Clarity is a<br><em>next step.</em></h1>
+    <div class="sub" id="s4s">cnfuzn.ai</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // Scene 1 (0-4s)
+    tl.from("#s1e", { opacity: 0, y: 30, duration: 0.7 }, 0.2)
+      .from("#s1h", { opacity: 0, y: 60, duration: 0.9, ease: "power3.out" }, 0.5)
+      .to("#s1", { opacity: 0, duration: 0.4 }, 3.6);
+
+    // Scene 2 (4-14s): nodes arrive one by one
+    tl.from("#s2h", { opacity: 0, y: -30, duration: 0.6 }, 4.2);
+    ["n1", "a1", "n2", "a2", "n3", "a3", "n4", "a4", "n5"].forEach((id, i) => {
+      tl.from("#" + id, { opacity: 0, y: 40, scale: 0.92, duration: 0.6, ease: "back.out(1.6)" }, 4.8 + i * 0.6);
+    });
+    tl.from(".r", { opacity: 0, y: 24, duration: 0.5, stagger: 0.25 }, 10.4)
+      .to("#s2", { opacity: 0, duration: 0.4 }, 13.6);
+
+    // Scene 3 (14-21s): disk tree bars grow
+    tl.from("#s3h", { opacity: 0, y: -30, duration: 0.6 }, 14.2);
+    ["d0", "d1", "d2", "d3", "d4", "d5"].forEach((id, i) => {
+      const t = 14.8 + i * 0.6;
+      tl.from("#" + id, { opacity: 0, x: -30, duration: 0.4 }, t)
+        .to("#" + id + " .fill", { width: (idx, el) => el.dataset.w + "%", duration: 0.9, ease: "power2.out" }, t);
+    });
+    tl.from("#s3n", { opacity: 0, y: 20, duration: 0.6 }, 19)
+      .to("#s3", { opacity: 0, duration: 0.4 }, 20.6);
+
+    // Scene 4 (21-24s)
+    tl.from("#s4h", { opacity: 0, y: 50, duration: 0.8, ease: "power3.out" }, 21.2)
+      .from("#s4s", { opacity: 0, duration: 0.6 }, 22.1);
+
+    tl.to({}, { duration: 0.01 }, 23.99); // pad timeline to the 24s composition length
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines["confusion-flow"] = tl;
+  </script>
+</div>
+</body>
+</html>

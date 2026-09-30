@@ -1,0 +1,14 @@
+flowchart TD
+  A([You: I am confused]) --> B[Tell: write it in your own words]
+  B --> C{Diagnose: which kind?}
+  C -->|facts| T[What is true?]
+  C -->|feelings| W[What do I want?]
+  C -->|choices| D[What should I do?]
+  C -->|identity| S[Who am I?]
+  C -->|future| P[Where am I going?]
+  T & W & D & S & P --> Z[Size it: disk tree of the problem]
+  Z --> M[Method workbench]
+  M --> N[Next step and review date]
+  N --> R{Review: clearer?}
+  R -->|yes| Done([Move on])
+  R -->|no| B

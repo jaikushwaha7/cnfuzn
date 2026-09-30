@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clarity Compass</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #ffffff; --ink: #1f2430; --muted: #6b7280; --line: #e4e0d6;
+    --accent: #2f6f5e; --accent-ink: #ffffff; --soft: #e3f0ea; --warn: #b4630a; --warn-soft: #fbeedb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --card: #1d2129; --ink: #ecebe6; --muted: #98a0ad; --line: #2c323d;
+      --accent: #5fb99e; --accent-ink: #0f1d18; --soft: #1c2d27; --warn: #e5a04d; --warn-soft: #33281a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  header h1 { margin: 0; font-size: 1.5rem; letter-spacing: -.01em; }
+  header p { margin: 4px 0 0; color: var(--muted); }
+  .steps { display: flex; gap: 6px; margin: 20px 0; }
+  .steps span { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
+  .steps span.on { background: var(--accent); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  h2 { margin: 0 0 4px; font-size: 1.2rem; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+  label { display: block; font-weight: 600; margin: 14px 0 6px; font-size: .95rem; }
+  textarea, input[type=text] { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
+  textarea { min-height: 96px; resize: vertical; }
+  textarea:focus, input:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 6px 14px; font: inherit; font-size: .92rem; cursor: pointer; }
+  .chip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .row input { flex: 1; }
+  .nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
+  button.btn { border: 0; border-radius: 10px; padding: 11px 20px; font: inherit; font-weight: 600; cursor: pointer; background: var(--accent); color: var(--accent-ink); }
+  button.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.btn:disabled { opacity: .4; cursor: not-allowed; }
+  button.link { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 4px 0; }
+  .lens { margin: 14px 0; }
+  .lens .q { display: flex; justify-content: space-between; gap: 8px; font-size: .93rem; }
+  .lens .val { font-weight: 700; color: var(--accent); min-width: 1.5em; text-align: right; }
+  .lens .ends { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .opt-title { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
+  .hero { background: var(--soft); border-color: transparent; }
+  .hero .big { font-size: 1.35rem; font-weight: 700; margin: 2px 0 10px; }
+  .bar { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .rank { margin: 12px 0; }
+  .rank .top { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600; }
+  .note { padding: 12px 14px; border-radius: 10px; background: var(--warn-soft); color: var(--ink); margin: 12px 0; font-size: .95rem; }
+  .note.good { background: var(--soft); }
+  ul.tight { margin: 6px 0 0; padding-left: 20px; }
+  ul.tight li { margin: 4px 0; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .hist { font-size: .88rem; color: var(--muted); }
+  .hist li { margin: 3px 0; }
+  .commit { border: 2px dashed var(--accent); border-radius: 12px; padding: 14px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Clarity Compass</h1>
+    <p>Not “what are the odds?” but “what am I best able to do next?”</p>
+  </header>
+  <div class="steps" id="steps"></div>
+  <div id="app"></div>
+</main>
+
+<script>
+const THEMES = ["Career", "Relationship", "Money", "Study", "Health", "Move / travel", "Creative", "Family", "Other"];
+
+const LENSES = [
+  { id: "doable",     name: "Easy to start",     q: "How easily could I take a first step within 48 hours?",           lo: "hard to start", hi: "can start now",
+    strength: "an easy way to start",           fix: "Shrink the first step until it takes 10 minutes or less." },
+  { id: "strengths",  name: "Uses my strengths", q: "How much does this use what I'm already good at?",                lo: "outside my skills", hi: "my home turf",
+    strength: "strengths you already have",     fix: "Start with the part you do well, or pair up with someone who has the skill you lack." },
+  { id: "sustain",    name: "Staying power",     q: "When it gets hard, how able would I be to keep going?",           lo: "I'd burn out", hi: "I'd keep going",
+    strength: "staying power",                  fix: "Define a minimum version you'd keep doing on bad days, and set a check-in date." },
+  { id: "reversible", name: "Room to adjust",    q: "How easy would it be to adjust or undo this if needed?",           lo: "locked in", hi: "easy to change",
+    strength: "room to adjust",                 fix: "Run a time-boxed trial (e.g. 2 weeks) before you fully commit." },
+  { id: "values",     name: "Fits my values",    q: "How well does this fit what really matters to me?",                lo: "clashes", hi: "deeply fits",
+    strength: "a fit with what matters to you", fix: "Name exactly what feels off. Can the option be reshaped to fit?" },
+  { id: "growth",     name: "Worth it either way", q: "Even if the outcome disappoints, how much would I learn or gain?", lo: "nothing", hi: "a lot",
+    strength: "something to gain whatever happens", fix: "Write down what you'd want to learn, so it counts even if it doesn't work out." },
+  { id: "support",    name: "Support & resources", q: "How much help (people, money, time) do I have for this?",        lo: "on my own", hi: "well backed",
+    strength: "people and resources behind you", fix: "Ask one person for one specific thing this week." }
+];
+
+const S = { step: 1, theme: "", story: "", progress: "", options: ["", ""], scores: [], priorities: [], gut: -1, action: "", when: "Today", committed: false };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const names = () => S.options.map(o => o.trim()).filter(Boolean);
+
+function store(key, val) { try { if (val === undefined) return JSON.parse(localStorage.getItem(key) || "null"); localStorage.setItem(key, JSON.stringify(val)); } catch (e) { return null; } }
+
+function go(n) { S.step = n; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+
+function render() {
+  $("steps").innerHTML = [1, 2, 3, 4].map(i => `<span class="${i <= S.step ? "on" : ""}"></span>`).join("");
+  [null, step1, step2, step3, step4][S.step]();
+}
+
+/* ---- Step 1: the situation ---- */
+function step1() {
+  const hist = store("compass_history") || [];
+  $("app").innerHTML = `
+    <div class="card">
+      <h2>What's confusing you?</h2>
+      <p class="sub">A person, a situation, a theme — anything. Write it the way you'd tell a friend.</p>
+      <div class="chips" id="themes">${THEMES.map(t => `<button class="chip ${S.theme === t ? "on" : ""}" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+      <label for="story">The situation</label>
+      <textarea id="story" placeholder="e.g. I have two job offers and can't tell which one to take…">${esc(S.story)}</textarea>
+      <label for="prog">What would “moving forward” look like for you?</label>
+      <input type="text" id="prog" value="${esc(S.progress)}" placeholder="e.g. I'd stop rereading the offers and reply to one of them">
+      <div class="nav"><span></span><button class="btn" id="next">Next: my options</button></div>
+    </div>
+    ${hist.length ? `<div class="card hist"><strong>Earlier decisions</strong><ul class="tight">${hist.slice(-4).reverse().map(h => `<li>${esc(h.date)} · ${esc(h.theme || "General")} → <em>${esc(h.choice)}</em></li>`).join("")}</ul></div>` : ""}`;
+  $("themes").onclick = e => { const t = e.target.dataset.t; if (!t) return; S.theme = S.theme === t ? "" : t; step1(); };
+  const check = () => { S.story = $("story").value; S.progress = $("prog").value; $("next").disabled = S.story.trim().length < 3; };
+  $("story").oninput = check; $("prog").oninput = check; check();
+  $("next").onclick = () => go(2);
+}
+
+/* ---- Step 2: the options ---- */
+function step2() {
+  $("app").innerHTML = `
+    <div class="card">
+      <h2>What are your options?</h2>
+      <p class="sub">List the paths you're torn between (2 to 5). “Do nothing for now” counts as an option.</p>
+      <div id="opts">${S.options.map((o, i) => `
+        <div class="row"><input type="text" data-i="${i}" value="${esc(o)}" placeholder="Option ${i + 1}" aria-label="Option ${i + 1}">
+        ${S.options.length > 2 ? `<button class="btn ghost" data-rm="${i}" aria-label="Remove option ${i + 1}">✕</button>` : ""}</div>`).join("")}</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        ${S.options.length < 5 ? `<button class="link" id="add">+ Add option</button>` : ""}
+        <button class="link" id="starter">Not sure? Use a starter set</button>
+      </div>
+      <div class="nav"><button class="btn ghost" id="back">Back</button><button class="btn" id="next">Next: weigh them</button></div>
+    </div>`;
+  const check = () => { $("next").disabled = names().length < 2; };
+  $("opts").oninput = e => { if (e.target.dataset.i !== undefined) { S.options[+e.target.dataset.i] = e.target.value; check(); } };
+  $("opts").onclick = e => { if (e.target.dataset.rm !== undefined) { S.options.splice(+e.target.dataset.rm, 1); step2(); } };
+  if ($("add")) $("add").onclick = () => { S.options.push(""); step2(); };
+  $("starter").onclick = () => { S.options = ["Go for it fully", "Try a small version first", "Wait / not now"]; step2(); };
+  $("back").onclick = () => go(1);
+  $("next").onclick = () => { S.options = names(); S.scores = S.options.map(() => Object.fromEntries(LENSES.map(l => [l.id, 5]))); S.gut = -1; go(3); };
+  check();
+}
+
+/* ---- Step 3: weigh by ability, not probability ---- */
+function step3() {
+  $("app").innerHTML = `
+    <div class="card">
+      <h2>What matters most right now?</h2>
+      <p class="sub">Pick up to two lenses that count double.</p>
+      <div class="chips" id="prio">${LENSES.map(l => `<button class="chip ${S.priorities.includes(l.id) ? "on" : ""}" data-p="${l.id}">${l.name}</button>`).join("")}</div>
+    </div>
+    <p class="muted" style="margin:0 0 12px">Rate each option on <strong>your ability to act</strong> — not on whether it will work out. Nobody can know that.</p>
+    ${S.options.map((o, oi) => `
+      <div class="card"><p class="opt-title">${esc(o)}</p>
+      ${LENSES.map(l => `
+        <div class="lens"><div class="q"><span>${l.q}</span><span class="val" id="v${oi}${l.id}">${S.scores[oi][l.id]}</span></div>
+        <input type="range" min="0" max="10" value="${S.scores[oi][l.id]}" data-o="${oi}" data-l="${l.id}" aria-label="${esc(o)}: ${l.name}">
+        <div class="ends"><span>${l.lo}</span><span>${l.hi}</span></div></div>`).join("")}
+      </div>`).join("")}
+    <div class="nav"><button class="btn ghost" id="back">Back</button><button class="btn" id="next">Show my clarity</button></div>`;
+  $("prio").onclick = e => {
+    const p = e.target.dataset.p; if (!p) return;
+    const i = S.priorities.indexOf(p);
+    if (i >= 0) S.priorities.splice(i, 1); else { if (S.priorities.length === 2) S.priorities.shift(); S.priorities.push(p); }
+    [...$("prio").children].forEach(c => c.classList.toggle("on", S.priorities.includes(c.dataset.p)));
+  };
+  $("app").oninput = e => {
+    const t = e.target; if (t.dataset.o === undefined) return;
+    S.scores[+t.dataset.o][t.dataset.l] = +t.value; $("v" + t.dataset.o + t.dataset.l).textContent = t.value;
+  };
+  $("back").onclick = () => go(2);
+  $("next").onclick = () => go(4);
+}
+
+/* ---- Step 4: result + affirmation + next step ---- */
+function ready(oi) {
+  let sum = 0, w = 0;
+  LENSES.forEach(l => { const k = S.priorities.includes(l.id) ? 2 : 1; sum += k * S.scores[oi][l.id]; w += k; });
+  return Math.round(sum / w * 10);
+}
+function lensList(oi, hi) {
+  const arr = LENSES.map(l => ({ l, v: S.scores[oi][l.id] }));
+  return hi ? arr.filter(x => x.v >= 7).sort((a, b) => b.v - a.v) : arr.filter(x => x.v <= 4).sort((a, b) => a.v - b.v);
+}
+
+function step4() {
+  const ranked = S.options.map((name, i) => ({ name, i, pts: ready(i) })).sort((a, b) => b.pts - a.pts);
+  const win = ranked[0], second = ranked[1];
+  const close = win.pts - second.pts <= 6;
+  const weak = lensList(win.i, false).slice(0, 2);
+  let strong = lensList(win.i, true).slice(0, 3);
+  if (!strong.length) strong = LENSES.map(l => ({ l, v: S.scores[win.i][l.id] })).sort((a, b) => b.v - a.v).slice(0, 2);
+  const lowAll = win.pts < 50;
+
+  const affirm = lowAll
+    ? `Feeling stuck here isn't a flaw in you — it's a signal that every path on this list asks more than you can comfortably give right now. That's useful to know. The move is to shrink an option until it fits.`
+    : `Choosing “${win.name}” isn't a gamble — it's the path where you're best equipped to act. You already have ${strong.map(s => s.l.strength).join(", ").replace(/, ([^,]*)$/, " and $1")}. You didn't freeze because you're indecisive; you paused because you care about getting this right. You don't need certainty, only a ready next step.`;
+
+  $("app").innerHTML = `
+    <div class="card hero">
+      <p class="muted" style="margin:0">${lowAll ? "Nothing is easy to act on yet" : close ? "Two paths are nearly tied" : "You are best able to move forward with"}</p>
+      <p class="big">${lowAll ? "Try a smaller version" : close ? esc(win.name) + " · " + esc(second.name) : esc(win.name)}</p>
+      <p style="margin:0">${esc(affirm)}</p>
+    </div>
+    ${close && !lowAll ? `<div class="note">These two are within a few points. Either is workable — break the tie with the one that's easier to reverse, or the one you feel lighter about.</div>` : ""}
+    ${lowAll ? `<div class="note">Add a smaller option (a 2-week trial, one conversation, one experiment) and re-rate. <button class="link" id="addsmall">Add “Small experiment” and re-rate</button></div>` : ""}
+    <div class="card">
+      <h2>Readiness to act</h2>
+      <p class="sub">How well-equipped you are to move on each option (0–100). This is about you, not the odds.</p>
+      ${ranked.map(r => `<div class="rank"><div class="top"><span>${esc(r.name)}</span><span>${r.pts}</span></div><div class="bar"><i style="width:${r.pts}%"></i></div></div>`).join("")}
+    </div>
+    <div class="card">
+      <h2>Gut check</h2>
+      <p class="sub">If a coin decided, which result would you feel relieved by?</p>
+      <div class="chips" id="gut">${S.options.map((o, i) => `<button class="chip ${S.gut === i ? "on" : ""}" data-g="${i}">${esc(o)}</button>`).join("")}</div>
+      <div id="gutnote"></div>
+    </div>
+    ${weak.length ? `<div class="card"><h2>Make “${esc(win.name)}” easier</h2>
+      <p class="sub">Your weakest lenses for this option, and one fix each.</p>
+      <ul class="tight">${weak.map(w => `<li><strong>${w.l.name} (${w.v}/10):</strong> ${w.l.fix}</li>`).join("")}</ul></div>` : ""}
+    <div class="card">
+      <h2>Your first step</h2>
+      <p class="sub">Something you can do in under 10 minutes. Motion creates clarity.</p>
+      <input type="text" id="action" value="${esc(S.action)}" placeholder="e.g. Email the recruiter two questions">
+      <div class="chips" id="when" style="margin-top:10px">${["Today", "Tomorrow", "This week"].map(w => `<button class="chip ${S.when === w ? "on" : ""}" data-w="${w}">${w}</button>`).join("")}</div>
+      <div class="nav"><button class="btn ghost" id="back">Re-rate</button><button class="btn" id="commit">I'll do it</button></div>
+      <div id="done"></div>
+    </div>
+    <p style="text-align:center"><button class="link" id="restart">Start a new confusion</button></p>`;
+
+  const gutNote = () => {
+    const g = S.gut; let html = "";
+    if (g >= 0 && !lowAll) {
+      if (g === win.i || (close && g === second.i)) html = `<div class="note good">Head and gut agree. That's rare clarity — trust it.</div>`;
+      else { const gw = lensList(g, false)[0];
+        html = `<div class="note">Your gut leans toward “${esc(S.options[g])}”, but the lenses favor “${esc(win.name)}”. ${gw ? `The gap is mostly <strong>${gw.l.name.toLowerCase()}</strong> (${gw.v}/10). If you can fix that, your gut may be right.` : `Both are workable — a real choice. Either way, you can act.`}</div>`; }
+    }
+    $("gutnote").innerHTML = html;
+  };
+  gutNote();
+  $("gut").onclick = e => { const g = e.target.dataset.g; if (g === undefined) return; S.gut = +g; [...$("gut").children].forEach((c, i) => c.classList.toggle("on", i === S.gut)); gutNote(); };
+  $("when").onclick = e => { const w = e.target.dataset.w; if (!w) return; S.when = w; [...$("when").children].forEach(c => c.classList.toggle("on", c.dataset.w === w)); };
+  $("action").oninput = e => { S.action = e.target.value; };
+  $("back").onclick = () => go(3);
+  $("restart").onclick = () => { Object.assign(S, { step: 1, theme: "", story: "", progress: "", options: ["", ""], scores: [], priorities: [], gut: -1, action: "", when: "Today" }); render(); };
+  if ($("addsmall")) $("addsmall").onclick = () => { if (S.options.length < 5) { S.options.push("Small experiment"); S.scores.push(Object.fromEntries(LENSES.map(l => [l.id, 5]))); } go(3); };
+  $("commit").onclick = () => {
+    if (!S.action.trim()) { $("action").focus(); return; }
+    const choice = lowAll ? "Small experiment" : win.name;
+    const hist = store("compass_history") || [];
+    hist.push({ date: new Date().toLocaleDateString(), theme: S.theme, choice });
+    store("compass_history", hist.slice(-20));
+    const text = `My commitment: ${S.action.trim()} — ${S.when.toLowerCase()}. (Path: ${choice})`;
+    $("done").innerHTML = `<div class="commit"><strong>Committed.</strong><br>${esc(text)}<br><span class="muted">You don't have to be sure. You just have to begin.</span><br><button class="link" id="copy">Copy commitment</button></div>`;
+    $("copy").onclick = () => { try { navigator.clipboard.writeText(text); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } };
+  };
+}
+
+render();
+</script>
+</body>
+</html>

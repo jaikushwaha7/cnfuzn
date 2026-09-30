@@ -1,0 +1,11 @@
+flowchart TD
+  R[Problem root] --> B1[Branch: sub-problem]
+  R --> B2[Branch: sub-problem]
+  B1 --> L1[Leaf: weight 1 to 10 and kind]
+  B1 --> L2[Leaf]
+  B2 --> L3[Leaf]
+  L1 & L2 & L3 --> S[Roll weights up the tree]
+  S --> Q[Size label: Small, Medium, Large, Huge]
+  S --> K[Big rocks: pieces carrying 60 percent]
+  S --> A[Actionable share: find out and decide vs feel and wait]
+  K --> N[Start with the biggest actionable rock]
